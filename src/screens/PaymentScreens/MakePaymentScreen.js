@@ -1,15 +1,69 @@
-import React, {memo, useState} from 'react';
+import React, { memo, useState } from 'react';
 import {
   AppBackGroundColor,
   AppHeaderTextColor,
   AppTextColor,
   AppActionButtonColor,
 } from '../../AppSettings';
-import {Text, View, StyleSheet} from 'react-native';
-import {Button, BackButton, HelpButton} from '../../components';
-import {goBack} from '../../constants';
+import { Text, View, StyleSheet } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
+import { imagePickerOptions } from '../../utils';
+import { useUpload } from '../../hooks';
+import { Button, BackButton, HelpButton } from '../../components';
+import { goBack } from '../../constants';
 
-const MakePaymentScreen = ({navigation}) => {
+const MakePaymentScreen = ({ navigation }) => {
+  const [{ downloadURL }, monitorUpload] = useUpload();
+  const [ocrresponse, setOCRResponse] = useState('');
+  const pickImage = () => {
+    ImagePicker.launchImageLibrary(imagePickerOptions, imagePickerResponse => {
+      const { didCancel, error } = imagePickerResponse;
+      if (didCancel) {
+        console.log('Canceled');
+      } else if (error) {
+        console.log('An error occurred: ', error);
+      } else {
+        monitorUpload(imagePickerResponse);
+      }
+    });
+  };
+
+  submitToGoogle = async () => {
+    try {
+      let body = JSON.stringify({
+        requests: [
+          {
+            features: [
+              { type: "TEXT_DETECTION", maxResults: 5 },
+            ],
+            image: {
+              source: {
+                imageUri: downloadURL
+              }
+            },
+          }
+        ]
+      });
+      let response = await fetch(
+        "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyATYprb4eLWXejFSBdBzSZwgwcz1n5FMaA",
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          method: "POST",
+          body: body
+        }
+      );
+      let responseJson = await response.json();
+      //setOCRResponse(responseJson);
+      console.log(JSON.stringify(responseJson.responses));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
   return (
     <View style={styles.container}>
       <View style={styles.headerView}>
@@ -41,8 +95,8 @@ const MakePaymentScreen = ({navigation}) => {
           <Text style={styles.instructionText}>
             5. Click on Verify Payment and upload the screen shot you just took
           </Text>
-          <Button style={styles.buttonText}>Verify Payment</Button>
-          <Button style={styles.buttonText}>Manually Verify Payment</Button>
+          <Button style={styles.buttonText} onPress={pickImage}>Verify Payment</Button>
+          <Button style={styles.buttonText} onPress={submitToGoogle}>Manually Verify Payment</Button>
         </View>
         <View style={styles.instructionView}>
           <Text style={styles.instructionText}>
