@@ -59,3 +59,4 @@ buck-out/
 /ios/Pods/
 .npmrc
 src/AppSettings.js
+android/*.hprof
