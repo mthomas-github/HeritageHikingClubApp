@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "467943521276",
+    "firebase_url": "https://hhcapp-f6c3c.firebaseio.com",
+    "project_id": "hhcapp-f6c3c",
+    "storage_bucket": "hhcapp-f6c3c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:467943521276:android:7d60ac80887029a2fad079",
+        "android_client_info": {
+          "package_name": "com.hhcapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "467943521276-lcapi7ph0g9nc14fmta4unuvf5eiu7ht.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgPoEHFaSPMGZbiuPxnrEZSMF4G2af1EE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "467943521276-lcapi7ph0g9nc14fmta4unuvf5eiu7ht.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "467943521276-5spejl0btjslmjqaq5f9602bp2o4j8gk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.easyitconsulting.HHCApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
