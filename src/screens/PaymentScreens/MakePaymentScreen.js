@@ -27,22 +27,15 @@ const MakePaymentScreen = ({ navigation }) => {
 
   const processDocument = async (localPath) => {
     const processed = await vision().cloudDocumentTextRecognizerProcessImage(localPath);
-
+    let foundPerson = false;
+    let foundAmount = false;
+    let foundCode = false;
     processed.blocks.forEach(block => {
-      if (block.text.includes('William Furey')) {
-        if (!validPerson) {
-          setValidPerson(true)
-        }
-      } 
-
-      if (block.text.includes('$498.00')) {
-        if (!validAmount)
-          setValidAmount(true)
-      } 
-
-      if (block.text.includes(userCode)) {
-        setValidCode(true);
-      } 
+      const r1 = /William Furey/i;
+      const r2 = /498.00/i;
+      if (r1.test(block.text)) foundPerson = true;
+      if (r2.test(block.text)) foundAmount = true;
+      if (block.text.indexOf(userCode) > -1) foundCode = true;
     });
   }
 
@@ -87,14 +80,17 @@ const MakePaymentScreen = ({ navigation }) => {
         console.log('P: ', validPerson, 'A: ', validAmount, 'C: ', validCode);
         if (validPerson && validAmount && validCode) {
           setToastMessage('Your Payment Succesfully Validated')
+          setValidAmount(false);
+          setValidCode(false);
+          setValidPerson(false);
           goBack(navigation)();
         } else {
           setToastMessage('Oops! Unable to validate your payment')
           setShowManualButton(true);
+          setValidAmount(false);
+          setValidCode(false);
+          setValidPerson(false);
         }
-        setValidAmount(false);
-        setValidCode(false);
-        setValidPerson(false);
       });
   }
 
