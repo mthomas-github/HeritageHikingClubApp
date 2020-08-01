@@ -4,22 +4,19 @@ import {
   AppHeaderTextColor,
   AppTextColor,
   AppActionButtonColor,
+  AppPaymentOwnerName
 } from '../../AppSettings';
 import { Text, View, StyleSheet } from 'react-native';
 import { utils } from '@react-native-firebase/app';
 import vision from '@react-native-firebase/ml-vision';
 import ImagePicker from 'react-native-image-picker';
-import { imagePickerOptions } from '../../utils';
-import { useUpload } from '../../hooks';
+import { imagePickerOptionNonSave } from '../../utils';
 import { Button, BackButton, HelpButton, Toast } from '../../components';
-import { goBack, onScreen } from '../../constants';
+import { goBack, onScreen, randomFixedInteger } from '../../constants';
 import { ActivityIndicator } from 'react-native-paper';
 
-const MakePaymentScreen = ({ navigation }) => {
+const MakePaymentScreen = ({ navigation, props }) => {
 
-  const [validPerson, setValidPerson] = useState(false);
-  const [validAmount, setValidAmount] = useState(false);
-  const [validCode, setValidCode] = useState(false);
   const [userCode, setUserCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -30,35 +27,22 @@ const MakePaymentScreen = ({ navigation }) => {
     let foundPerson = false;
     let foundAmount = false;
     let foundCode = false;
-    processed.blocks.forEach(block => {
-      const r1 = /William Furey/i;
-      const r2 = /498.00/i;
-      if (r1.test(block.text)) foundPerson = true;
-      if (r2.test(block.text)) foundAmount = true;
-      if (block.text.indexOf(userCode) > -1) foundCode = true;
+    
+    processed.blocks.map(block => {
+      if (block.text.indexOf(AppPaymentOwnerName) > -1) foundPerson = true;
+      if (block.text.indexOf(props.paymentAmount) > -1) foundAmount = true;
+      if (block.text.indexOf(userCode) > -1) foundCode = true; 
     });
+
+    if (foundPerson && foundAmount && foundCode) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  const randomFixedInteger = (length) => {
-    let userCode = Math.floor(Math.pow(10, length - 1) + Math.random() * (Math.pow(10, length) - Math.pow(10, length - 1) - 1));
-    return userCode;
-  }
-
-  const imagePickerOptions = {
-    quality: 0.7,
-    allowsEditing: true,
-    mediaType: 'photo',
-    noData: true,
-    storageOptions: {
-      skipBackup: true,
-      waituntilSaved: false,
-      path: 'images',
-      cameraRoll: true,
-    },
-  };
-
-  const chooseImage = () => {
-    ImagePicker.launchImageLibrary(imagePickerOptions, response => {
+  const pickTranscationPicture = () => {
+    ImagePicker.launchImageLibrary(imagePickerOptionNonSave, response => {
       const { didCancel, error } = response;
       if (didCancel) {
         console.log('Canceled');
@@ -74,30 +58,23 @@ const MakePaymentScreen = ({ navigation }) => {
   const submitToGoogle = (filePath) => {
     setToastMessage('Validating Payment');
     processDocument(filePath)
-      .then(() => setToastMessage('Completed Payment Validation'))
+      .then()
       .catch(e => console.log(e))
-      .done(() => {
-        console.log('P: ', validPerson, 'A: ', validAmount, 'C: ', validCode);
-        if (validPerson && validAmount && validCode) {
+      .done((validPayment) => {
+        if (validPayment) {
           setToastMessage('Your Payment Succesfully Validated')
-          setValidAmount(false);
-          setValidCode(false);
-          setValidPerson(false);
           goBack(navigation)();
         } else {
           setToastMessage('Oops! Unable to validate your payment')
           setShowManualButton(true);
-          setValidAmount(false);
-          setValidCode(false);
-          setValidPerson(false);
         }
+
       });
   }
 
   useEffect(() => {
     setLoading(true);
-    let userCode = randomFixedInteger(6);
-    setUserCode(userCode);
+    setUserCode(() => randomFixedInteger(6));
     setLoading(false);
   }, []);
 
@@ -134,7 +111,7 @@ const MakePaymentScreen = ({ navigation }) => {
             <Text style={styles.instructionText}>
               5. Click on Verify Payment and upload the screen shot you just took
           </Text>
-            <Button style={styles.buttonText} onPress={chooseImage}>Verify Payment</Button>
+            <Button style={styles.buttonText} onPress={pickTranscationPicture}>Verify Payment</Button>
             {showManualButton && <Button style={styles.buttonText} onPress={''}>Manually Verify Payment</Button>}
           </View>
           <View style={styles.instructionView}>

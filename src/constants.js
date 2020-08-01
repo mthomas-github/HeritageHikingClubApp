@@ -99,3 +99,8 @@ export const getPaymentTypeText = paymentType => {
       return 'Cash. Envelope with name on it';
   }
 };
+
+export const randomFixedInteger = (length) => {
+  let userCode = Math.floor(Math.pow(10, length - 1) + Math.random() * (Math.pow(10, length) - Math.pow(10, length - 1) - 1));
+  return userCode;
+}

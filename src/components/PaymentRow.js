@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Pressable} from 'react-native';
 import Icon from 'react-native-fontawesome-pro';
 
 const PaymentRow = ({...props}) => {
@@ -15,6 +15,7 @@ const PaymentRow = ({...props}) => {
           ${Number(props.amount)}.00
         </Text>
       </View>
+      {props.feeSchduleScreen ? (
       <View style={styles.item} key={props.key}>
         {props.cashOnly ? (
           <Icon
@@ -32,9 +33,28 @@ const PaymentRow = ({...props}) => {
           />
         )}
       </View>
+      ): <View style={styles.item} key={props.key}>
+        {props.isPaid ? (
+            <Icon
+              name="check"
+              size={20}
+              color="green"
+              containerStyle={styles.icon}
+            />
+        ) : (
+              props.cashOnly ? (<Icon
+                name="times"
+                size={20}
+                color="red"
+                containerStyle={styles.icon}
+              />) : <Pressable style={{ alignItems: 'center' }}><Text style={{alignItems: 'center'}}>Pay</Text></Pressable>
+        )}
+        </View>
+        }
     </>
   );
 };
+
 
 const styles = StyleSheet.create({
   item: {

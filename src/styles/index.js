@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import styled from 'styled-components/native';
 import {StyleSheet} from 'react-native';
-
 export const Container = styled.View`
   flex: 1;
   width: 100%;
@@ -16,13 +15,13 @@ export const StepContainer = styled.View`
   width: 100%;
   alignSelf: center;
   alignItems: center;
-  backgroundColor: #00b2fe;
+  backgroundColor: #14C0CC;
 `;
 
 export const Step2Container = styled.View`
   flex: 1;    
   padding-top: 50px;
-  backgroundColor: #00b2fe;
+  backgroundColor: #14C0CC;
 `;
 
 

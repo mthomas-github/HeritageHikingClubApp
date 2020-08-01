@@ -10,3 +10,16 @@ export const imagePickerOptions = {
     cameraRoll: true,
   },
 };
+
+export const imagePickerOptionNonSave = {
+  quality: 1,
+  allowsEditing: true,
+  mediaType: 'photo',
+  noData: false,
+  storageOptions: {
+    skipBackup: true,
+    waituntilSaved: false,
+    path: 'images',
+    cameraRoll: true,
+  },
+};
