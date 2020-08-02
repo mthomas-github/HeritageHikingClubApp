@@ -727,14 +727,6 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@callstack/react-theme-provider@^3.0.5":
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/@callstack/react-theme-provider/-/react-theme-provider-3.0.5.tgz#a173e455e9603c9c45357a3b6ace1273086527ca"
-  integrity sha512-Iec+ybWN0FvNj87sD3oWo/49edGUP0UOSdMnzCJEFJIDYr992ECIuOV89burAAh2/ibPCxgLiK6dmgv2mO/8Tg==
-  dependencies:
-    deepmerge "^3.2.0"
-    hoist-non-react-statics "^3.3.0"
-
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.4.tgz#f864ae85004d0fcab6f50be9141c4da368d1656a"
@@ -3591,7 +3583,7 @@ hoist-non-react-statics@^2.3.1:
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
   integrity sha512-rqcy4pJo55FTTLWt+bU8ukscqHeE/e9KWvsOW2b/a3afxQZhwkQdT1rPPCJ0rYXdj4vNcasY8zHTH+jF/qStxw==
 
-hoist-non-react-statics@^3.0.0, hoist-non-react-statics@^3.1.0, hoist-non-react-statics@^3.3.0:
+hoist-non-react-statics@^3.0.0, hoist-non-react-statics@^3.1.0:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
   integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
@@ -5961,15 +5953,6 @@ react-native-iphone-x-helper@^1.2.1:
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.2.1.tgz#645e2ffbbb49e80844bb4cbbe34a126fda1e6772"
   integrity sha512-/VbpIEp8tSNNHIvstuA3Swx610whci1Zpc9mqNkqn14DkMbw+ORviln2u0XyHG1kPvvwTNGZY6QpeFwxYaSdbQ==
 
-react-native-paper@^3.8.0:
-  version "3.11.0"
-  resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-3.11.0.tgz#1a2425af211eacb6fae8de9ab6254bdcbad7e1b4"
-  integrity sha512-kMzcsA1YdVBwPOE9/ioQkpCMR/ep/ivf4PdnAg/yp2XwrEaWDPTv/6DE63LziULOygBHMtN3aDsHpgXzFkmmLg==
-  dependencies:
-    "@callstack/react-theme-provider" "^3.0.5"
-    color "^3.1.2"
-    react-native-safe-area-view "^0.14.9"
-
 react-native-pdf@^6.1.1:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/react-native-pdf/-/react-native-pdf-6.2.0.tgz#e6da125b407338b7bca15d7f776b70773c37304f"
@@ -6005,13 +5988,6 @@ react-native-safe-area-context@^0.7.3:
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-0.7.3.tgz#ad6bd4abbabe195332c53810e4ce5851eb21aa2a"
   integrity sha512-9Uqu1vlXPi+2cKW/CW6OnHxA76mWC4kF3wvlqzq4DY8hn37AeiXtLFs2WkxH4yXQRrnJdP6ivc65Lz+MqwRZAA==
 
-react-native-safe-area-view@^0.14.9:
-  version "0.14.9"
-  resolved "https://registry.yarnpkg.com/react-native-safe-area-view/-/react-native-safe-area-view-0.14.9.tgz#90ee8383037010d9a5055a97cf97e4c1da1f0c3d"
-  integrity sha512-WII/ulhpVyL/qbYb7vydq7dJAfZRBcEhg4/UWt6F6nAKpLa3gAceMOxBxI914ppwSP/TdUsandFy6lkJQE0z4A==
-  dependencies:
-    hoist-non-react-statics "^2.3.1"
-
 react-native-screens@^2.4.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.9.0.tgz#ead2843107ba00fee259aa377582e457c74f1f3b"
@@ -6023,6 +5999,11 @@ react-native-signature-canvas@^2.0.0:
   integrity sha512-cbTtNdw2Ti+ZQVkpWevMuT2KdYthlR6w7I1cEzZN5Y4EtSXSfCCyIJzoLXK6rg00/d6s7CVUqyeOM5pUfEw2Bg==
   dependencies:
     react-native-webview "^10.3.2"
+
+react-native-simple-toast@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-simple-toast/-/react-native-simple-toast-1.1.2.tgz#007de57e21986e811b4bbc2d3a6de949c0221df9"
+  integrity sha512-p13p6Db9viLBxbAlicVLD6CcrbkmqQoEjP20vY+SxbO3y5cdmY0AOn/FiMC+iuC4eQxk0SFeJm4PFRWby/ntyg==
 
 react-native-status-bar-height@^2.2.0, react-native-status-bar-height@^2.5.0:
   version "2.5.0"

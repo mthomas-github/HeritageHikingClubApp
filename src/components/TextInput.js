@@ -1,6 +1,5 @@
 import React, {memo} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
-import {TextInput as Input} from 'react-native-paper';
+import { View, StyleSheet, Text, TextInput as Input} from 'react-native';
 import {theme} from '../utils/theme';
 
 const TextInput = ({errorText, ...props}) => (

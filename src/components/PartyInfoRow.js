@@ -1,7 +1,5 @@
-import React, {memo, useState} from 'react';
-import {TextInput, Header} from '../components';
-import {View} from 'react-native';
-import {useForm} from '../hooks/useForm';
+import React, {memo} from 'react';
+import { View, TextInput, Header} from 'react-native';
 
 const PartyInfoRow = ({...props}) => {
   const {

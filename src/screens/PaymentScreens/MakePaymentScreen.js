@@ -6,14 +6,13 @@ import {
   AppActionButtonColor,
   AppPaymentOwnerName
 } from '../../AppSettings';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { utils } from '@react-native-firebase/app';
 import vision from '@react-native-firebase/ml-vision';
 import ImagePicker from 'react-native-image-picker';
 import { imagePickerOptionNonSave } from '../../utils';
 import { Button, BackButton, HelpButton, Toast } from '../../components';
 import { goBack, onScreen, randomFixedInteger } from '../../constants';
-import { ActivityIndicator } from 'react-native-paper';
 
 const MakePaymentScreen = ({ navigation, props }) => {
 

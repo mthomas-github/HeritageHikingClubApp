@@ -1,10 +1,9 @@
-import React, {memo} from 'react';
-import {StyleSheet} from 'react-native';
-import {Button as PaperButton} from 'react-native-paper';
+import React from 'react';
+import {StyleSheet, Pressable, Text} from 'react-native';
 import {theme} from '../utils/theme';
 
 const Button = ({mode, style, children, ...props}) => (
-  <PaperButton
+  <Pressable
     style={[
       styles.button,
       mode === 'outlined' && {backgroundColor: theme.colors.actionButtons},
@@ -17,8 +16,10 @@ const Button = ({mode, style, children, ...props}) => (
     ]}
     mode={mode}
     {...props}>
-    {children}
-  </PaperButton>
+    <Text>
+      {children}
+    </Text>
+  </Pressable>
 );
 
 const styles = StyleSheet.create({
@@ -33,4 +34,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Button);
+export default Button;

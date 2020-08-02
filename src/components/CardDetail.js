@@ -1,8 +1,7 @@
 import React, {memo} from 'react';
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import {colors} from '../constants';
-import {Button} from '../components';
+import {StyleSheet, Text, View, Image, Pressable} from 'react-native';
 import Icon from 'react-native-fontawesome-pro';
+import {colors} from '../constants';
 
 const CardDetail = ({item, buttonStyle, buttonText, onPress, ...props}) => {
   return (
@@ -23,12 +22,10 @@ const CardDetail = ({item, buttonStyle, buttonText, onPress, ...props}) => {
       </View>
       <View style={styles.cardFooter}>
         <View style={styles.socialBarContainer}>
-          <View style={styles.ocialBarSection}>
-            <TouchableOpacity style={buttonStyle}>
-              <Button color={colors.white} onPress={onPress} {...props}>
-                {buttonText}
-              </Button>
-            </TouchableOpacity>
+          <View style={styles.socialBarSection}>
+              <Pressable color={colors.white} style={buttonStyle} onPress={onPress} {...props}>
+              <Text>{buttonText}</Text>
+            </Pressable>
           </View>
         </View>
       </View>

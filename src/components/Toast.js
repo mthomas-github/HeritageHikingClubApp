@@ -1,21 +1,11 @@
 import React, {memo} from 'react';
-import {Snackbar} from 'react-native-paper';
 import {StyleSheet, View, Text} from 'react-native';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {theme} from '../utils/theme';
 
 const Toast = ({type = 'error', message, onDismiss}) => (
   <View style={styles.container}>
-    <Snackbar
-      visible={!!message}
-      duration={2000}
-      onDismiss={onDismiss}
-      style={{
-        backgroundColor:
-          type === 'error' ? theme.colors.error : theme.colors.success,
-      }}>
-      <Text style={styles.content}>{message}</Text>
-    </Snackbar>
+   
   </View>
 );
 
