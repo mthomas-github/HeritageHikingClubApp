@@ -29,8 +29,8 @@ const MakePaymentScreen = ({ navigation, route, props }) => {
     
     processed.blocks.map(block => {
       if (block.text.indexOf(AppPaymentOwnerName) > -1) foundPerson = true;
-      if (block.text.indexOf('- $' + userTripInfo.amount + '.00') > -1) foundAmount = true;
-      if (block.text.indexOf(userCode) > -1) foundCode = true; 
+      if (block.text.indexOf(userTripInfo.amount) > -1) foundAmount = true;
+      if (block.text.match(userCode) === `${userCode}`) foundCode = true; 
     });
 
     if (foundPerson && foundAmount && foundCode) {
@@ -61,7 +61,7 @@ const MakePaymentScreen = ({ navigation, route, props }) => {
       .catch(e => console.log(e))
       .done((validPayment) => {
         if (validPayment) {
-          Toast.showWithGravity('Your Payment Succesfully Validated', Toast.SHORT, Toast.LONG);
+          Toast.showWithGravity('Your Payment Succesfully Validated', Toast.SHORT, Toast.TOP);
           goBack(navigation)();
         } else {
           Toast.showWithGravity('Oops! Unable to validate your payment', Toast.LONG, Toast.TOP);
