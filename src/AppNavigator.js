@@ -17,7 +17,7 @@ import {
   AdventureDetailScreen,
   AdventureInterestedScreen,
   AdventureSignupScreen,
-  UserTripPaymentSchdule,
+  UserTripPaymentSchedule,
   MakePaymentScreen,
 } from './screens';
 
@@ -116,7 +116,7 @@ const AppNavigator = () => {
       />
       <Stack.Screen
         name="UserTripPaymentScreen"
-        component={UserTripPaymentSchdule}
+        component={UserTripPaymentSchedule}
       />
       <Stack.Screen name="MakePaymentScreen" component={MakePaymentScreen} />
     </Stack.Navigator>

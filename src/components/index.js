@@ -10,7 +10,7 @@ export {default as TextInput} from './TextInput';
 export {default as Toast} from './Toast';
 export {default as InfoText} from './InfoText';
 export {default as BaseIcon} from './BaseIcon';
-export {default as PaymentRow} from './PaymentRow';
 export {default as PartyInfoRow} from './PartyInfoRow';
 export {default as RadioButton} from './RadioButton';
 export {default as HelpButton} from './HelpButton';
+export {PaymentTableResponsive} from './PaymentTableResponsive';
