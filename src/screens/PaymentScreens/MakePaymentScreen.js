@@ -7,19 +7,19 @@ import {
   AppPaymentOwnerName
 } from '../../AppSettings';
 import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
-import { utils } from '@react-native-firebase/app';
 import vision from '@react-native-firebase/ml-vision';
 import ImagePicker from 'react-native-image-picker';
+import Toast from 'react-native-simple-toast';
 import { imagePickerOptionNonSave } from '../../utils';
-import { Button, BackButton, HelpButton, Toast } from '../../components';
-import { goBack, onScreen, randomFixedInteger } from '../../constants';
+import { Button, BackButton, HelpButton } from '../../components';
+import { goBack, randomFixedInteger, getPaymentTypeTextInstuction, getPaymentTypeText } from '../../constants';
 
-const MakePaymentScreen = ({ navigation, props }) => {
-
+const MakePaymentScreen = ({ navigation, route, props }) => {
   const [userCode, setUserCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showManualButton, setShowManualButton] = useState(false);
+  const [userTripInfo] = useState(route.params);
 
   const processDocument = async (localPath) => {
     const processed = await vision().cloudDocumentTextRecognizerProcessImage(localPath);
@@ -29,7 +29,7 @@ const MakePaymentScreen = ({ navigation, props }) => {
     
     processed.blocks.map(block => {
       if (block.text.indexOf(AppPaymentOwnerName) > -1) foundPerson = true;
-      if (block.text.indexOf(props.paymentAmount) > -1) foundAmount = true;
+      if (block.text.indexOf('- $' + userTripInfo.amount + '.00') > -1) foundAmount = true;
       if (block.text.indexOf(userCode) > -1) foundCode = true; 
     });
 
@@ -61,10 +61,10 @@ const MakePaymentScreen = ({ navigation, props }) => {
       .catch(e => console.log(e))
       .done((validPayment) => {
         if (validPayment) {
-          setToastMessage('Your Payment Succesfully Validated')
+          Toast.showWithGravity('Your Payment Succesfully Validated', Toast.SHORT, Toast.LONG);
           goBack(navigation)();
         } else {
-          setToastMessage('Oops! Unable to validate your payment')
+          Toast.showWithGravity('Oops! Unable to validate your payment', Toast.LONG, Toast.TOP);
           setShowManualButton(true);
         }
 
@@ -88,12 +88,12 @@ const MakePaymentScreen = ({ navigation, props }) => {
         <View style={[styles.elementsContainer]}>
           <View>
             <Text style={styles.headerStyle}>
-              Making Payment With {'PaymentType'} &#38; Verifying
+              Making Payment With {getPaymentTypeText(userTripInfo.type)} &#38; Verifying
           </Text>
           </View>
           <View style={styles.instructionView}>
             <Text style={styles.instructionText}>
-              1. Make payment for {'$100.00'} with Venmo sending it to @william-furey-2
+              1. Make payment for ${userTripInfo.amount}.00 with {getPaymentTypeTextInstuction(userTripInfo.type)}
           </Text>
             <Text style={styles.instructionText}>
               2. In the message please put this code: {userCode},
@@ -104,14 +104,14 @@ const MakePaymentScreen = ({ navigation, props }) => {
           </Text>
             <Text style={styles.instructionText}>
               4. Your transcation should say the following:
-              "You paid William Furey -$100.00 in message your unique code {userCode}".
+              "You paid William Furey -${userTripInfo.amount}.00 in message your unique code {userCode}".
               Take a screenshot and save it as an photo.
           </Text>
             <Text style={styles.instructionText}>
               5. Click on Verify Payment and upload the screen shot you just took
           </Text>
             <Button style={styles.buttonText} onPress={pickTranscationPicture}>Verify Payment</Button>
-            {showManualButton && <Button style={styles.buttonText} onPress={''}>Manually Verify Payment</Button>}
+            {showManualButton && <Button style={styles.buttonText} onPress={goBack(navigation)}>Manually Verify Payment</Button>}
           </View>
           <View style={styles.instructionView}>
             <Text style={styles.instructionText}>
@@ -120,8 +120,6 @@ const MakePaymentScreen = ({ navigation, props }) => {
           </Text>
           </View>
         </View>
-        <Toast message={toastMessage} onDismiss={() => setToastMessage('')} />
-
       </View>
     );
 };

@@ -7,7 +7,6 @@ export {default as Header} from './Header';
 export {default as Logo} from './Logo';
 export {default as Paragraph} from './Paragraph';
 export {default as TextInput} from './TextInput';
-export {default as Toast} from './Toast';
 export {default as InfoText} from './InfoText';
 export {default as BaseIcon} from './BaseIcon';
 export {default as PartyInfoRow} from './PartyInfoRow';

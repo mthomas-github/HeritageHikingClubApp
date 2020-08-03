@@ -1,6 +1,7 @@
 import React, {memo, useState} from 'react';
 import {Text, StyleSheet, TouchableOpacity} from 'react-native';
 import auth from '@react-native-firebase/auth';
+import Toast from 'react-native-simple-toast';
 import {
   Background,
   BackButton,
@@ -8,7 +9,6 @@ import {
   Header,
   TextInput,
   Button,
-  Toast,
 } from '../components';
 import {theme} from '../utils/theme';
 import {emailValidator} from '../utils/validators';
@@ -17,7 +17,6 @@ import {onScreen} from '../constants';
 const ForgotPasswordScreen = ({navigation}) => {
   const [email, setEmail] = useState({value: '', error: ''});
   const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState({value: '', type: ''});
 
   const _onSendPressed = async () => {
     if (loading) {
@@ -35,30 +34,21 @@ const ForgotPasswordScreen = ({navigation}) => {
     await auth()
       .sendPasswordResetEmail(email.value)
       .then(() => {
-        setToast({
-          type: 'success',
-          value: 'Email with password has been sent.',
-        });
+        Toast.showWithGravity('Success! Email with password has been sent.', Toast.LONG, Toast.TOP);
       })
       .catch(error => {
         switch (error.code) {
           case 'auth/invalid-email':
-            setToast({type: 'error', value: 'Invalid email address format.'});
+            Toast.showWithGravity('Invalid email address format.', Toast.LONG, Toast.TOP);
             break;
           case 'auth/user-not-found':
-            setToast({
-              type: 'error',
-              value: 'User with this email does not exist.',
-            });
+            Toast.showWithGravity('User with this email does not exist.', Toast.LONG, Toast.TOP);
             break;
           case 'auth/too-many-requests':
-            setToast({
-              type: 'error',
-              value: 'Too many request. Try again in a minute.',
-            });
+            Toast.showWithGravity('Too many request. Try again in a minute.', Toast.LONG, Toast.TOP);
             break;
           default:
-            setToast({type: 'error', value: 'Check your internet connection.'});
+            Toast.showWithGravity('Check your internet connection.', Toast.LONG, Toast.TOP);
             break;
         }
       });
@@ -99,11 +89,6 @@ const ForgotPasswordScreen = ({navigation}) => {
         onPress={() => onScreen('LoginScreen', navigation)()}>
         <Text style={styles.label}>← Back to login</Text>
       </TouchableOpacity>
-      <Toast
-        type={toast.type}
-        message={toast.value}
-        onDismiss={() => setToast({value: '', type: ''})}
-      />
     </Background>
   );
 };

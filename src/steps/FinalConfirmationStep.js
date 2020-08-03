@@ -2,7 +2,7 @@ import React, {memo, useEffect, useState} from 'react';
 import {Logo, Header} from '../components';
 import {Text, View, TouchableHighlight, ActivityIndicator} from 'react-native';
 import {Container, styles} from '../styles';
-import {getPaymentTypeText} from '../constants';
+import { getPaymentTypeTextInstuction} from '../constants';
 
 const FinalConfirmationStep = ({...props}) => {
   const {next, getState} = props;
@@ -27,7 +27,7 @@ const FinalConfirmationStep = ({...props}) => {
             Congratulations on completiing the sign up process, now you have
             {' 96 Hrs '}to make sure that you send your payment of $
             {userData.AmountDue}.00 via{' '}
-            {getPaymentTypeText(userData.PaymentType)}. If you fail to submit
+              {getPaymentTypeTextInstuction(userData.PaymentType)}. If you fail to submit
             payment you will loose your seat. You will receive an email with
             your payment schdule if you've choosen to pay by payments. You will
             also recieve a trip packet.

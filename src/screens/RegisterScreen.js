@@ -10,13 +10,13 @@ import {
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import ImagePicker from 'react-native-image-picker';
+import Toast from 'react-native-simple-toast';
 import {
   Background,
   Header,
   Button,
   TextInput,
   BackButton,
-  Toast,
 } from '../components';
 import {
   emailValidator,
@@ -34,7 +34,6 @@ const RegisterScreen = ({navigation}) => {
   const [email, setEmail] = useState({value: '', error: ''});
   const [password, setPassword] = useState({value: '', error: ''});
   const [loading, setLoading] = useState(false);
-  const [toasterror, setToastError] = useState('');
   const [{downloadURL, uploading, fileName}, monitorUpload] = useUpload();
 
   const uploadFile = () => {
@@ -100,7 +99,7 @@ const RegisterScreen = ({navigation}) => {
           .catch(err => console.log(err))
           .done();
       })
-      .catch(err => setToastError(err))
+      .catch(err => Toast.showWithGravity(err, Toast.SHORT, Toast.TOP))
       .done();
 
     setLoading(false);
@@ -165,8 +164,6 @@ const RegisterScreen = ({navigation}) => {
           <Text style={styles.link}>Login</Text>
         </TouchableOpacity>
       </View>
-
-      <Toast message={toasterror} onDismiss={() => setToastError('')} />
     </Background>
   );
 };

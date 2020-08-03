@@ -1,28 +1,60 @@
 import React, { memo, useState } from 'react';
-import { Text, View, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import { Text, View, StyleSheet, ActivityIndicator, Pressable } from 'react-native';
+import Icon from 'react-native-fontawesome-pro';
 import { BackButton, HelpButton, PaymentTableResponsive } from '../components';
-//import {PaymentTableResponsive} from '../components/PaymentTableResponsive';
-import { goBack } from '../constants';
+import { goBack, onScreen } from '../constants';
 import {
   AppBackGroundColor,
   AppHeaderTextColor,
   AppTextColor,
   AppActionButtonColor,
-  AppPaymentOwnerName
+  AppOwnerName,
 } from '../AppSettings';
-const { width } = Dimensions.get('window');
+
 const headers = [
   "Date",
   "Amount",
   "Paid",
 ]
-const UserTripPaymentSchedule = ({ navigation, route, ...props }) => {
+
+const UserTripPaymentSchedule = ({ navigation, route }) => {
   const [userTripInfo] = useState(route.params);
-  const [loading, setLoading] = useState(false);
+  
+  const payButton = (paymentAmount, paymentType) => {
+    
+    const dataObj = {
+      amount: paymentAmount,
+      type: paymentType
+    }
+    
+    return (
+      <Pressable style={styles.payButton} onPressIn={onScreen('MakePaymentScreen', navigation, dataObj)}>
+      <Text>Pay</Text>
+    </Pressable>
+    )
+  };
 
+  const paidIcon = () => (
+    <Icon size={25} name="check" color={AppHeaderTextColor} containerStyle={{ alignItems: 'center' }} />
+  )
 
-  return loading ?
-    <ActivityIndicator size='large' /> : (
+  const cashOnlyIcon = () => (
+    <Icon size={28} name='badge-dollar' color={AppHeaderTextColor} containerStyle={{ alignItems: 'center' }} title="Test" />
+  )
+
+  const tableData =
+    userTripInfo.Payments.map(records => (
+      [
+        records.isDeposit ? 'Now' : records.date,
+        `$${records.amount}.00`,
+        records.paid
+          ? paidIcon()
+          : records.isTip || records.isOther || userTripInfo.paymentType === 4
+            ? cashOnlyIcon()
+            : payButton(records.amount, userTripInfo.PaymentType)]
+    ));
+
+  return (
       <View style={styles.container}>
         <View style={styles.headerView}>
           <BackButton style={styles.backButton} goBack={goBack(navigation)} />
@@ -34,9 +66,13 @@ const UserTripPaymentSchedule = ({ navigation, route, ...props }) => {
               Payment Dates
             </Text>
             <View style={styles.instructionView}>
-              <Text>Total Price For Your Trip: ${userTripInfo.TotalCost}.00</Text>
-            </View>        
-            <PaymentTableResponsive data={userTripInfo.Payments} headers={headers}/>
+              <Text style={styles.instructionText}>Total Price For Your Trip: ${userTripInfo.TotalCost}.00</Text>
+            </View>
+            <PaymentTableResponsive rowData={tableData} paymentType={userTripInfo.PaymentType} headers={headers} />
+            <View style={styles.instructionView}>
+              <Text style={styles.instructionText}>Cash Only Payments? Look For $ Icon.
+              Give to {AppOwnerName} in envelope with your name on it</Text>
+            </View>
           </View>
         </View>
       </View>
@@ -45,9 +81,6 @@ const UserTripPaymentSchedule = ({ navigation, route, ...props }) => {
 
 
 const styles = StyleSheet.create({
-  paddingTop5: {
-    paddingTop: 5,
-  },
   container: {
     paddingTop: 45,
     flex: 1,
@@ -79,10 +112,6 @@ const styles = StyleSheet.create({
     marginRight: 24,
     marginBottom: 24,
   },
-  buttonText: {
-    backgroundColor: AppActionButtonColor,
-    color: AppTextColor,
-  },
   instructionText: {
     color: AppTextColor,
     paddingBottom: 3,
@@ -92,6 +121,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
     flexWrap: 'nowrap',
+  },
+  payButton: {
+    alignSelf: 'center',
+    backgroundColor: AppActionButtonColor,
+    paddingLeft: 40,
+    paddingRight: 40
+  },
+  iconWrapper: {
+    alignItems: 'center'
   },
 });
 

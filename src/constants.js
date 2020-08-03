@@ -85,7 +85,7 @@ export const colors = {
   blue: '#4995cd',
 };
 
-export const getPaymentTypeText = paymentType => {
+export const getPaymentTypeTextInstuction = paymentType => {
   switch (paymentType) {
     case 1:
       return 'Venmo. Send to @william-furey-2';
@@ -99,6 +99,21 @@ export const getPaymentTypeText = paymentType => {
       return 'Cash. Envelope with name on it';
   }
 };
+
+export const getPaymentTypeText = paymentType => {
+  switch (paymentType) {
+    case 1:
+      return 'Venmo';
+    case 2:
+      return 'Zelle';
+    case 3:
+      return 'Check';
+    case 4:
+      return 'Cash';
+    default:
+      return 'Cash';
+  }
+}
 
 export const randomFixedInteger = (length) => {
   let userCode = Math.floor(Math.pow(10, length - 1) + Math.random() * (Math.pow(10, length) - Math.pow(10, length - 1) - 1));

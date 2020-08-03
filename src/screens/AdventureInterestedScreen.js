@@ -12,19 +12,18 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
+import Toast from 'react-native-simple-toast';
 import {
   Background,
   Paragraph,
   Header,
   BackButton,
   Logo,
-  Toast,
   Button,
 } from '../components';
 import {goBack, onScreen} from '../constants';
 
 const AdventureInterestedScreen = ({navigation, route}) => {
-  const [error, setError] = useState();
   const [partySize, setPartySize] = useState(1);
   const [hikingLevel, setHikingLevel] = useState(
     Platform.OS === 'ios' ? '-----Choose Hiking Level-----' : '0',
@@ -82,7 +81,7 @@ const AdventureInterestedScreen = ({navigation, route}) => {
         minValue={1}
         value={partySize}
         onChange={value => setPartySize(value)}
-        onLimitReached={(isMax, msg) => setError(msg)}
+        onLimitReached={(isMax, msg) => Toast.showWithGravity(msg, Toast.SHORT, Toast.TOP)}
         onLimitReachedMessage="Max Party Size! Contact HHC"
       />
       <View style={styles.container}>
@@ -104,7 +103,6 @@ const AdventureInterestedScreen = ({navigation, route}) => {
         )}
       </View>
       <Button onPress={onSubmit}>Submit</Button>
-      <Toast message={error} onDismiss={() => setError('')} />
     </Background>
   );
 };

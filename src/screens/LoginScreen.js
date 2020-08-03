@@ -1,13 +1,13 @@
 import React, {memo, useState} from 'react';
 import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
 import auth from '@react-native-firebase/auth';
+import Toast from 'react-native-simple-toast';
 import {
   Background,
   Logo,
   Header,
   Button,
   TextInput,
-  Toast,
 } from '../components';
 import {theme} from '../utils/theme';
 import {emailValidator, passwordValidator} from '../utils/validators';
@@ -17,7 +17,6 @@ const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState({value: '', error: ''});
   const [password, setPassword] = useState({value: '', error: ''});
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   const _onLoginPressed = async () => {
     if (loading) {
@@ -40,17 +39,17 @@ const LoginScreen = ({navigation}) => {
       .catch(err => {
         switch (err.code) {
           case 'auth/invalid-email':
-            setError('Invalid email address format.');
+            Toast.showWithGravity('Invalid email address format.', Toast.LONG, Toast.TOP);
             break;
           case 'auth/user-not-found':
           case 'auth/wrong-password':
-            setError('Invalid email address or password.');
+            Toast.showWithGravity('Invalid email address or password.', Toast.LONG, Toast.TOP);
             break;
           case 'auth/too-many-requests':
-            setError('Too many request. Try again in a minute.');
+            Toast.showWithGravity('Too many request. Try again in a minute.', Toast.LONG, Toast.TOP);
             break;
           default:
-            setError('Check your internet connection.');
+            Toast.showWithGravity('Check your internet connection.', Toast.LONG, Toast.TOP);
             break;
         }
       });
@@ -106,8 +105,6 @@ const LoginScreen = ({navigation}) => {
           <Text style={styles.link}>Sign up</Text>
         </TouchableOpacity>
       </View>
-
-      <Toast message={error} onDismiss={() => setError('')} />
     </Background>
   );
 };
