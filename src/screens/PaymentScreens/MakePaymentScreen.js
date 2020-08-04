@@ -19,18 +19,20 @@ const MakePaymentScreen = ({ navigation, route, props }) => {
   const [loading, setLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showManualButton, setShowManualButton] = useState(false);
-  const [userTripInfo] = useState(route.params);
+  const [data] = useState(route.params);
 
   const processDocument = async (localPath) => {
     const processed = await vision().cloudDocumentTextRecognizerProcessImage(localPath);
     let foundPerson = false;
     let foundAmount = false;
     let foundCode = false;
-    
+    const regExpUserCode = new RegExp(`\\b${userCode}\\b`, 'gi')
+    const regExpOwnerName = new RegExp(`\\b${AppPaymentOwnerName}\\b`, 'gi')
+    const regExpAmount = new RegExp(`\\b${userTripInfo.amount}\\b`, 'gi')
     processed.blocks.map(block => {
-      if (block.text.indexOf(AppPaymentOwnerName) > -1) foundPerson = true;
-      if (block.text.indexOf(userTripInfo.amount) > -1) foundAmount = true;
-      if (block.text.match(userCode) === `${userCode}`) foundCode = true; 
+      if (block.text.match(regExpOwnerName) !== null) foundPerson = true;
+      if (block.text.match(regExpAmount) !== null) foundAmount = true;
+      if (block.text.match(regExpUserCode) !== null) foundCode = true; 
     });
 
     if (foundPerson && foundAmount && foundCode) {
@@ -88,12 +90,12 @@ const MakePaymentScreen = ({ navigation, route, props }) => {
         <View style={[styles.elementsContainer]}>
           <View>
             <Text style={styles.headerStyle}>
-              Making Payment With {getPaymentTypeText(userTripInfo.type)} &#38; Verifying
+              Making Payment With {getPaymentTypeText(data.userTripData.PaymentType)} &#38; Verifying
           </Text>
           </View>
           <View style={styles.instructionView}>
             <Text style={styles.instructionText}>
-              1. Make payment for ${userTripInfo.amount}.00 with {getPaymentTypeTextInstuction(userTripInfo.type)}
+              1. Make payment for ${data.userTripData.Payments[data.clickTripIndex].amount}.00 with {getPaymentTypeTextInstuction(data.userTripData.PaymentType)}
           </Text>
             <Text style={styles.instructionText}>
               2. In the message please put this code: {userCode},
@@ -104,7 +106,7 @@ const MakePaymentScreen = ({ navigation, route, props }) => {
           </Text>
             <Text style={styles.instructionText}>
               4. Your transcation should say the following:
-              "You paid William Furey -${userTripInfo.amount}.00 in message your unique code {userCode}".
+              "You paid William Furey -${data.userTripData.Payments[data.clickTripIndex].amount}.00 {userCode}".
               Take a screenshot and save it as an photo.
           </Text>
             <Text style={styles.instructionText}>

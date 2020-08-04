@@ -20,11 +20,11 @@ const headers = [
 const UserTripPaymentSchedule = ({ navigation, route }) => {
   const [userTripInfo] = useState(route.params);
   
-  const payButton = (paymentAmount, paymentType) => {
+  const payButton = (data, index) => {
     
     const dataObj = {
-      amount: paymentAmount,
-      type: paymentType
+      userTripData: data,
+      clickTripIndex: index
     }
     
     return (
@@ -43,7 +43,7 @@ const UserTripPaymentSchedule = ({ navigation, route }) => {
   )
 
   const tableData =
-    userTripInfo.Payments.map(records => (
+    userTripInfo.Payments.map((records, index) => (
       [
         records.isDeposit ? 'Now' : records.date,
         `$${records.amount}.00`,
@@ -51,7 +51,7 @@ const UserTripPaymentSchedule = ({ navigation, route }) => {
           ? paidIcon()
           : records.isTip || records.isOther || userTripInfo.paymentType === 4
             ? cashOnlyIcon()
-            : payButton(records.amount, userTripInfo.PaymentType)]
+            : payButton(userTripInfo, index)]
     ));
 
   return (
