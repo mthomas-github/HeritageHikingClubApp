@@ -11,4 +11,4 @@ export {
 } from './AdventureInterestedScreen';
 export {default as AdventureSignupScreen} from './AdventureSignupScreen';
 export { default as UserTripPaymentSchedule } from './UserTripPaymentSchedule';
-export {default as MakePaymentScreen} from './PaymentScreens/MakePaymentScreen';
+export { default as UserPaymentScreen} from './PaymentScreens/UserPaymentScreen';

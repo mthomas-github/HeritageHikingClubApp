@@ -9,7 +9,7 @@ export {default as Paragraph} from './Paragraph';
 export {default as TextInput} from './TextInput';
 export {default as InfoText} from './InfoText';
 export {default as BaseIcon} from './BaseIcon';
-export {default as PartyInfoRow} from './PartyInfoRow';
+export {PartyInfoRow} from './PartyInfoRow';
 export {default as RadioButton} from './RadioButton';
 export {default as HelpButton} from './HelpButton';
 export {PaymentTableResponsive} from './PaymentTableResponsive';

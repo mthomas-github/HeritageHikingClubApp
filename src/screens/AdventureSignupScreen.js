@@ -1,11 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {goBack, onScreen} from '../constants';
-import {StepContainer} from '../styles/index';
 import {
-  WelcomeStep,
-  ConfirmPartyStep,
-  FeeScheduleStep,
-  PartyInfomationStep,
+  Step1,
+  Step2,
+  Step3,
+  Step4,
   LiabilityStep,
   ResponsibilitiesStep,
   CancellationStep,
@@ -17,10 +16,10 @@ import AnimatedFormView from '../components/AnimatedFormView';
 
 const AdventureSignupScreen = ({navigation, route}) => {
   const allSteps = [
-    {name: 'Welcome Step', component: WelcomeStep},
-    {name: 'Confirm Party', component: ConfirmPartyStep},
-    {name: 'Fee Schedule', component: FeeScheduleStep},
-    {name: 'Party Infomation', component: PartyInfomationStep},
+    {name: 'Welcome Step', component: Step1},
+    {name: 'Confirm Party', component: Step2},
+    {name: 'Fee Schedule', component: Step3},
+    {name: 'Party Infomation', component: Step4},
     {name: 'Responsibilities', component: ResponsibilitiesStep},
     {name: 'Cancelation Step', component: CancellationStep},
     {
@@ -50,7 +49,7 @@ const AdventureSignupScreen = ({navigation, route}) => {
 
     updateUser.set(
       {
-        Trips: data,
+        Trips: [data],
       },
       {merge: true},
     );
@@ -61,7 +60,7 @@ const AdventureSignupScreen = ({navigation, route}) => {
   };
 
   return (
-    <StepContainer>
+   <>
       <AnimatedFormView
         steps={allSteps}
         onFinish={finish}
@@ -70,7 +69,7 @@ const AdventureSignupScreen = ({navigation, route}) => {
         onCancel={cancel}
         trip={route.params}
       />
-    </StepContainer>
+    </>
   );
 };
 

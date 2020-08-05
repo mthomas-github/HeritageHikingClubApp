@@ -1,7 +1,7 @@
-export {default as WelcomeStep} from './WelcomeStep';
-export {default as ConfirmPartyStep} from './ConfirmPartyStep';
-export {default as FeeScheduleStep} from './FeeScheduleStep';
-export {default as PartyInfomationStep} from './PartyInfomationStep';
+export {default as Step1} from './Step1';
+export {default as Step2} from './Step2';
+export {default as Step3} from './Step3';
+export {default as Step4} from './Step4';
 export {default as LiabilityStep} from './LiabilityStep';
 export {default as ResponsibilitiesStep} from './ResponsibilitesStep';
 export {default as CancellationStep} from './CancellationStep';

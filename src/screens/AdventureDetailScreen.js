@@ -60,12 +60,11 @@ const AdventureDetailScreen = ({navigation, route}) => {
           .get()
           .then(querySnapshot => {
             const data = querySnapshot.data();
-
             if (data.Trips.TripID === tripSelected.key) {
               setButtonStatus(4);
               setUserTripInfo(data.Trips);
             } else {
-              setButtonStatus(1);
+              setButtonStatus(3);
             }
           })
           .catch(e => console.log(e));

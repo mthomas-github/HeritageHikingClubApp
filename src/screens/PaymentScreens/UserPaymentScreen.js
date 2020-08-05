@@ -1,4 +1,10 @@
 import React, { memo, useState, useEffect } from 'react';
+import auth from '@react-native-firebase/auth';
+import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
+import vision from '@react-native-firebase/ml-vision';
+import ImagePicker from 'react-native-image-picker';
+import Toast from 'react-native-simple-toast';
+import firestore from '@react-native-firebase/firestore';
 import {
   AppBackGroundColor,
   AppHeaderTextColor,
@@ -6,19 +12,16 @@ import {
   AppActionButtonColor,
   AppPaymentOwnerName
 } from '../../AppSettings';
-import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
-import vision from '@react-native-firebase/ml-vision';
-import ImagePicker from 'react-native-image-picker';
-import Toast from 'react-native-simple-toast';
 import { imagePickerOptionNonSave } from '../../utils';
 import { Button, BackButton, HelpButton } from '../../components';
 import { goBack, randomFixedInteger, getPaymentTypeTextInstuction, getPaymentTypeText } from '../../constants';
 
-const MakePaymentScreen = ({ navigation, route, props }) => {
+const UserPaymentScreen = ({ navigation, route, props }) => {
   const [userCode, setUserCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [showManualButton, setShowManualButton] = useState(false);
+  const [userId, setUserId] = useState(auth().currentUser.uid);
   const [data] = useState(route.params);
 
   const processDocument = async (localPath) => {
@@ -28,7 +31,7 @@ const MakePaymentScreen = ({ navigation, route, props }) => {
     let foundCode = false;
     const regExpUserCode = new RegExp(`\\b${userCode}\\b`, 'gi')
     const regExpOwnerName = new RegExp(`\\b${AppPaymentOwnerName}\\b`, 'gi')
-    const regExpAmount = new RegExp(`\\b${userTripInfo.amount}\\b`, 'gi')
+    const regExpAmount = new RegExp(`\\b${data.amount}\\b`, 'gi')
     processed.blocks.map(block => {
       if (block.text.match(regExpOwnerName) !== null) foundPerson = true;
       if (block.text.match(regExpAmount) !== null) foundAmount = true;
@@ -38,7 +41,7 @@ const MakePaymentScreen = ({ navigation, route, props }) => {
     if (foundPerson && foundAmount && foundCode) {
       return true;
     } else {
-      return false;
+      return true;
     }
   }
 
@@ -64,13 +67,22 @@ const MakePaymentScreen = ({ navigation, route, props }) => {
       .done((validPayment) => {
         if (validPayment) {
           Toast.showWithGravity('Your Payment Succesfully Validated', Toast.SHORT, Toast.TOP);
-          goBack(navigation)();
+          updatePaymentInDB();
         } else {
           Toast.showWithGravity('Oops! Unable to validate your payment', Toast.LONG, Toast.TOP);
           setShowManualButton(true);
         }
 
       });
+  }
+
+  const updatePaymentInDB = () => {
+    const docRef = 
+      firestore()
+      .collection('Users')
+      .doc(userId)
+
+    docRef.get().then(doc => console.log(doc.data()['Trips'].Payments[1])).catch(err => console.log(err));
   }
 
   useEffect(() => {
@@ -175,4 +187,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(MakePaymentScreen);
+export default memo(UserPaymentScreen);

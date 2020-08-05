@@ -18,7 +18,7 @@ import {
   AdventureInterestedScreen,
   AdventureSignupScreen,
   UserTripPaymentSchedule,
-  MakePaymentScreen,
+  UserPaymentScreen,
 } from './screens';
 
 const Tab = createBottomTabNavigator();
@@ -118,7 +118,7 @@ const AppNavigator = () => {
         name="UserTripPaymentScreen"
         component={UserTripPaymentSchedule}
       />
-      <Stack.Screen name="MakePaymentScreen" component={MakePaymentScreen} />
+      <Stack.Screen name="UserPaymentScreen" component={UserPaymentScreen} />
     </Stack.Navigator>
   );
 };

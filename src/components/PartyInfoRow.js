@@ -1,7 +1,12 @@
-import React, {memo} from 'react';
-import { View, TextInput, Header} from 'react-native';
-
-const PartyInfoRow = ({...props}) => {
+import React from 'react';
+import { View, TextInput, StyleSheet, Text } from 'react-native';
+import {
+  AppBackGroundColor,
+  AppHeaderTextColor,
+  AppTextColor,
+  AppActionButtonColor
+} from '../AppSettings';
+export const PartyInfoRow = ({ ...props }) => {
   const {
     member,
     inputName,
@@ -11,30 +16,44 @@ const PartyInfoRow = ({...props}) => {
     blurName,
     blurEmail,
   } = props;
-
   return (
-    <View style={{marginTop: -15}}>
-      <Header style={{color: 'white'}}>Member {member}</Header>
+    <View stlye={styles.container}>
+      <Text style={styles.label}>{member === 1 ? 'Main Member' : 'Member' + member}</Text>
       <TextInput
-        label="Full Name"
-        returnKeyType="next"
-        value={inputName}
-        onChangeText={onChangeName}
         key={props.key}
+        style={[styles.commonInput, styles.inputName]}
+        onChangeText={onChangeName}
+        value={inputName}
         onBlur={blurName}
+        placeholder='Full Name'
+        placeholderTextColor={'#2A5C99'}
       />
       <TextInput
-        label="Email"
-        returnKeyType="done"
+        key={props.key}
+        style={[styles.commonInput]}
         onChangeText={onChangeEmail}
-        autoCapitalize="none"
         value={inputEmail}
-        keyboardType="email-address"
-        key={props.key * 2}
         onBlur={blurEmail}
+        placeholder='Email'
+        placeholderTextColor={'#2A5C99'}
       />
     </View>
   );
 };
 
-export default memo(PartyInfoRow);
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 10,
+  },
+  label: {
+    paddingBottom: 10, paddingTop: 10
+  },
+  commonInput: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: AppHeaderTextColor
+  }, 
+  inputName: {
+    marginBottom: 10
+  },
+});

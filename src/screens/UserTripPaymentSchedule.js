@@ -18,6 +18,7 @@ const headers = [
 ]
 
 const UserTripPaymentSchedule = ({ navigation, route }) => {
+  
   const [userTripInfo] = useState(route.params);
   
   const payButton = (data, index) => {
@@ -28,7 +29,7 @@ const UserTripPaymentSchedule = ({ navigation, route }) => {
     }
     
     return (
-      <Pressable style={styles.payButton} onPressIn={onScreen('MakePaymentScreen', navigation, dataObj)}>
+      <Pressable style={styles.payButton} onPressIn={onScreen('UserPaymentScreen', navigation, dataObj)}>
       <Text>Pay</Text>
     </Pressable>
     )
@@ -68,7 +69,7 @@ const UserTripPaymentSchedule = ({ navigation, route }) => {
             <View style={styles.instructionView}>
               <Text style={styles.instructionText}>Total Price For Your Trip: ${userTripInfo.TotalCost}.00</Text>
             </View>
-            <PaymentTableResponsive rowData={tableData} paymentType={userTripInfo.PaymentType} headers={headers} />
+            <PaymentTableResponsive rowData={tableData} headers={headers} />
             <View style={styles.instructionView}>
               <Text style={styles.instructionText}>Cash Only Payments? Look For $ Icon.
               Give to {AppOwnerName} in envelope with your name on it</Text>
