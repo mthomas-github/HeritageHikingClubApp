@@ -44,7 +44,7 @@ const UserTripPaymentSchedule = ({ navigation, route }) => {
   )
 
   const tableData =
-    userTripInfo.Payments.map((records, index) => (
+    userTripInfo.userPayments.map((records, index) => (
       [
         records.isDeposit ? 'Now' : records.date,
         `$${records.amount}.00`,
@@ -67,7 +67,7 @@ const UserTripPaymentSchedule = ({ navigation, route }) => {
               Payment Dates
             </Text>
             <View style={styles.instructionView}>
-              <Text style={styles.instructionText}>Total Price For Your Trip: ${userTripInfo.TotalCost}.00</Text>
+              <Text style={styles.instructionText}>Total Price For Your Trip: ${userTripInfo.tripCost}.00</Text>
             </View>
             <PaymentTableResponsive rowData={tableData} headers={headers} />
             <View style={styles.instructionView}>

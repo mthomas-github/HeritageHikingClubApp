@@ -16,14 +16,13 @@ import { imagePickerOptionNonSave } from '../../utils';
 import { Button, BackButton, HelpButton } from '../../components';
 import { goBack, randomFixedInteger, getPaymentTypeTextInstuction, getPaymentTypeText } from '../../constants';
 
-const UserPaymentScreen = ({ navigation, route, props }) => {
+const UserPaymentScreen = ({ navigation, route, ...props }) => {
   const [userCode, setUserCode] = useState('');
   const [loading, setLoading] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
   const [showManualButton, setShowManualButton] = useState(false);
-  const [userId, setUserId] = useState(auth().currentUser.uid);
+  const [userId] = useState(auth().currentUser.uid);
   const [data] = useState(route.params);
-
+  console.log(data);
   const processDocument = async (localPath) => {
     const processed = await vision().cloudDocumentTextRecognizerProcessImage(localPath);
     let foundPerson = false;
@@ -35,7 +34,7 @@ const UserPaymentScreen = ({ navigation, route, props }) => {
     processed.blocks.map(block => {
       if (block.text.match(regExpOwnerName) !== null) foundPerson = true;
       if (block.text.match(regExpAmount) !== null) foundAmount = true;
-      if (block.text.match(regExpUserCode) !== null) foundCode = true; 
+      if (block.text.match(regExpUserCode) !== null) foundCode = true;
     });
 
     if (foundPerson && foundAmount && foundCode) {
@@ -60,7 +59,9 @@ const UserPaymentScreen = ({ navigation, route, props }) => {
   }
 
   const submitToGoogle = (filePath) => {
-    setToastMessage('Validating Payment');
+
+    Toast.showWithGravity('Validating Payment', Toast.SHORT, Toast.TOP);
+
     processDocument(filePath)
       .then()
       .catch(e => console.log(e))
@@ -77,12 +78,12 @@ const UserPaymentScreen = ({ navigation, route, props }) => {
   }
 
   const updatePaymentInDB = () => {
-    const docRef = 
+    const docRef =
       firestore()
-      .collection('Users')
-      .doc(userId)
+        .collection('Users')
+        .doc(userId)
 
-    docRef.get().then(doc => console.log(doc.data()['Trips'].Payments[1])).catch(err => console.log(err));
+    docRef.get().then(doc => console.log(doc.data()['trips'].Payments[1])).catch(err => console.log(err));
   }
 
   useEffect(() => {
@@ -102,13 +103,13 @@ const UserPaymentScreen = ({ navigation, route, props }) => {
         <View style={[styles.elementsContainer]}>
           <View>
             <Text style={styles.headerStyle}>
-              Making Payment With {getPaymentTypeText(data.userTripData.PaymentType)} &#38; Verifying
+              Making Payment With {getPaymentTypeText(data.userTripData.paymentType)} &#38; Verifying
           </Text>
           </View>
           <View style={styles.instructionView}>
             <Text style={styles.instructionText}>
-              1. Make payment for ${data.userTripData.Payments[data.clickTripIndex].amount}.00 with {getPaymentTypeTextInstuction(data.userTripData.PaymentType)}
-          </Text>
+              1. Make payment for ${data.userTripData.userPayments[data.clickTripIndex].amount}.00 with {getPaymentTypeTextInstuction(data.userTripData.PaymentType)}
+            </Text>
             <Text style={styles.instructionText}>
               2. In the message please put this code: {userCode},
             also choose private. Click Pay.
@@ -118,7 +119,7 @@ const UserPaymentScreen = ({ navigation, route, props }) => {
           </Text>
             <Text style={styles.instructionText}>
               4. Your transcation should say the following:
-              "You paid William Furey -${data.userTripData.Payments[data.clickTripIndex].amount}.00 {userCode}".
+              "You paid William Furey -${data.userTripData.userPayments[data.clickTripIndex].amount}.00 {userCode}".
               Take a screenshot and save it as an photo.
           </Text>
             <Text style={styles.instructionText}>

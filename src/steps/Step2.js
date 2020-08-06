@@ -33,9 +33,9 @@ const Step2 = ({...props}) => {
       if (member.userID === auth().currentUser.uid) {
         setPartySize(member.partySize.toString());
         saveState({
-          UserId: member.userID,
-          OnTrip: true,
-          TripID: tripID,
+          userId: member.userID,
+          onTrip: true,
+          tripId: tripID,
         });
       }
     });

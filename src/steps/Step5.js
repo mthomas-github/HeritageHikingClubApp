@@ -1,56 +1,50 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import {
-  View,
   Text,
+  View,
   StyleSheet,
-  Pressable
+  Pressable,
+  ActivityIndicator,
+  Dimensions,
 } from 'react-native';
+import { WebView } from 'react-native-webview';
+import storage from '@react-native-firebase/storage';
 import {
   AppBackGroundColor,
   AppHeaderTextColor,
   AppTextColor,
   AppActionButtonColor
 } from '../AppSettings';
-import { HelpButton, PartyInfoRow } from '../components';
+import { HelpButton } from '../components';
 
-const Step4 = ({ ...props }) => {
-  const { back, next, cancel, saveState, getState } = props;
-  const n = getState().partySize;
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [partyMemberInfo, setPartyMemberInfo] = useState([]);
-  const [nextDisabled, setNextDisabled] = useState(true);
+const Step5 = ({ ...props }) => {
+  const [loading, setLoading] = useState(true);
+  const { next, cancel, back } = props;
+  const [pdfFile, setPdfFile] = useState({});
+ 
 
-  const onChangeName = text => {
-    setName(text);
-  };
+  useEffect(() => {
+    let loadingFile = true
 
-  const onChangeEmail = text => {
-    setEmail(text);
-  };
+    const getPDF = async () => {
+      const url = 
+      await storage()
+        .ref('trips/lLA84qhHx6JHZ0fK9Vii/Responsibilites.pdf')
+        .getDownloadURL();
+      return url;
+    };
 
-  const onNext = () => {
-    saveState({ partyInfo: partyMemberInfo });
-    next();
-  };
+    getPDF().then((data) => {
+      setPdfFile({uri: data})
+    }).catch(err => console.log(err));
+    setLoading(false);
 
-  const onInputNameBlur = value => {
-    if (value.nativeEvent.text) {
+    return function cleanup () {
+      loadingFile = false
     }
-  };
+  }, [])
 
-  const onInputEmailBlur = value => {
-    if (value.nativeEvent.text) {
-      let query = {
-        name: name,
-        email: email,
-      };
-      setNextDisabled(false)
-      setPartyMemberInfo([...partyMemberInfo, query]);
-    }
-  };
-
-  return (
+  return loading ? <ActivityIndicator size='large' /> : (
     <View style={styles.container}>
       <View style={styles.headerView}>
         <HelpButton style={styles.helpButton} />
@@ -58,26 +52,23 @@ const Step4 = ({ ...props }) => {
       <View style={[styles.elementsContainer]}>
         <View>
           <Text style={styles.headerStyle}>
-            Party Info
+            Responsibilities
             </Text>
         </View>
-        <View>
-          {[...Array(n)].map((e, i) => (
-            <PartyInfoRow
-              key={i}
-              member={i++ + 1}
-              onChangeEmail={onChangeEmail}
-              onChangeName={onChangeName}
-              blurName={onInputNameBlur}
-              blurEmail={onInputEmailBlur}
-            />
-          ))}
+        <View style={styles.instructionView}>
+          <Text style={styles.instructionText}>Double Tab To Zoom In</Text>
         </View>
+
+        <WebView
+          useWebKit={false}
+          scrollEnabled={true}
+          scalesPageToFit={true}
+          source={pdfFile} />
         <View style={styles.instructionView}>
           <View style={styles.buttonContainer}>
             <Pressable style={styles.buttonText} onPressIn={back}><Text>Back</Text></Pressable>
             <Pressable style={styles.buttonText} onPressIn={cancel}><Text>Cancel</Text></Pressable>
-            <Pressable style={styles.buttonText} onPressIn={onNext} disabled={nextDisabled}><Text>Next</Text></Pressable>
+            <Pressable style={styles.buttonText} onPressIn={next}><Text>Next</Text></Pressable>
           </View>
         </View>
       </View>
@@ -85,11 +76,15 @@ const Step4 = ({ ...props }) => {
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     paddingTop: 45,
     flex: 1,
     backgroundColor: AppBackGroundColor,
+  },
+  pdf: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
   },
   headerView: {
     flex: 0,
@@ -152,4 +147,5 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
 });
-export default memo(Step4);
+
+export default memo(Step5);

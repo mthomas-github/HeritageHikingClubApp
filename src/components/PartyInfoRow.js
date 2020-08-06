@@ -27,6 +27,11 @@ export const PartyInfoRow = ({ ...props }) => {
         onBlur={blurName}
         placeholder='Full Name'
         placeholderTextColor={'#2A5C99'}
+        autoCompleteType='off'
+        autoCorrect={false}
+        keyboardType='default'
+        autoCapitalize='none'
+        returnKeyType='next'
       />
       <TextInput
         key={props.key}
@@ -36,6 +41,11 @@ export const PartyInfoRow = ({ ...props }) => {
         onBlur={blurEmail}
         placeholder='Email'
         placeholderTextColor={'#2A5C99'}
+        autoCompleteType='off'
+        autoCorrect={false}
+        keyboardType='email-address'
+        autoCapitalize='none'
+        returnKeyType='done'
       />
     </View>
   );

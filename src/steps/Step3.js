@@ -38,7 +38,6 @@ const Step3 = ({ ...props }) => {
     <Icon size={28} name='badge-dollar' color={AppHeaderTextColor} containerStyle={{ alignItems: 'center' }} />
   )
   useEffect(() => {
-    console.log(userData);
     setLoading(true);
     const tableData =
       tripData.payments.map(records => (
@@ -50,8 +49,12 @@ const Step3 = ({ ...props }) => {
     setTableData(tableData);
 
     tripData.payments.map(records => {
-      if (records.isDeposit) setNonRefundAmount(records.amount * userData.partySize);
-    
+      if (records.isDeposit) {
+        setNonRefundAmount(records.amount * userData.partySize);
+        saveState({depositAmount: records.amount});
+
+      }
+
       const query = {
         date: records.date,
         amount: records.amount * userData.partySize,
@@ -71,7 +74,7 @@ const Step3 = ({ ...props }) => {
   const onNext = () => {
     saveState({
       userPayments: userPaymentSchdeule,
-      tripCost: Number(tripData.tripPrice * userData.PartySize),
+      tripCost: Number(tripData.tripPrice * userData.partySize),
       nonRefundTotal: Number(nonRefundAmount),
     });
     next();

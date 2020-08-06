@@ -1,56 +1,72 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import {
-  View,
   Text,
+  View,
   StyleSheet,
-  Pressable
+  Pressable,
+  ActivityIndicator,
+  Dimensions,
 } from 'react-native';
+import { WebView } from 'react-native-webview';
+import storage from '@react-native-firebase/storage';
 import {
   AppBackGroundColor,
   AppHeaderTextColor,
   AppTextColor,
   AppActionButtonColor
 } from '../AppSettings';
-import { HelpButton, PartyInfoRow } from '../components';
+import { HelpButton } from '../components';
+import Signature from 'react-native-signature-canvas';
+import moment from 'moment';
 
-const Step4 = ({ ...props }) => {
-  const { back, next, cancel, saveState, getState } = props;
-  const n = getState().partySize;
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [partyMemberInfo, setPartyMemberInfo] = useState([]);
-  const [nextDisabled, setNextDisabled] = useState(true);
+const Step6 = ({...props}) => {
+  const[loading, setLoading] = useState(true);
+  const [signature, setSignature] = useState(null);
+  const {next, cancel, back, saveState, getState} = props;
+  const [currentDate, setCurrentDate] = useState(null);
+  const [visible, setModalVisible] = useState(false);
+  const [pdfFile, setPdfFile] = useState({});
 
-  const onChangeName = text => {
-    setName(text);
+  const handleSignature = userSignature => {
+    setSignature(userSignature);
+    const currentDT = moment(new Date()).format('YYYY-MM-DD');
+    setCurrentDate(currentDT);
   };
 
-  const onChangeEmail = text => {
-    setEmail(text);
+  const handleEmpty = () => {
+    console.log('Empty');
   };
 
-  const onNext = () => {
-    saveState({ partyInfo: partyMemberInfo });
-    next();
-  };
-
-  const onInputNameBlur = value => {
-    if (value.nativeEvent.text) {
+  const style = `
+    .m-signature-pad--footer
+    .button {
+      background-color: red;
+      color: #FFF;
     }
-  };
+  `;
 
-  const onInputEmailBlur = value => {
-    if (value.nativeEvent.text) {
-      let query = {
-        name: name,
-        email: email,
-      };
-      setNextDisabled(false)
-      setPartyMemberInfo([...partyMemberInfo, query]);
+  useEffect(() => {
+    let loadingFile = true
+
+    const getPDF = async () => {
+      const url =
+        await storage()
+          .ref('trips/lLA84qhHx6JHZ0fK9Vii/SignturePage.pdf')
+          .getDownloadURL();
+      return url;
+    };
+
+    getPDF().then((data) => {
+      setPdfFile({ uri: data })
+    }).catch(err => console.log(err));
+    setLoading(false);
+
+    return function cleanup() {
+      loadingFile = false
     }
-  };
+  }, [])
 
-  return (
+  return loading ? <ActivityIndicator size='large' /> : (
     <View style={styles.container}>
       <View style={styles.headerView}>
         <HelpButton style={styles.helpButton} />
@@ -58,26 +74,22 @@ const Step4 = ({ ...props }) => {
       <View style={[styles.elementsContainer]}>
         <View>
           <Text style={styles.headerStyle}>
-            Party Info
+            Cancellation Policy &amp; Liability Release
             </Text>
         </View>
-        <View>
-          {[...Array(n)].map((e, i) => (
-            <PartyInfoRow
-              key={i}
-              member={i++ + 1}
-              onChangeEmail={onChangeEmail}
-              onChangeName={onChangeName}
-              blurName={onInputNameBlur}
-              blurEmail={onInputEmailBlur}
-            />
-          ))}
+        <View style={styles.instructionView}>
+          <Text style={styles.instructionText}>Double Tab To Zoom In</Text>
         </View>
+        <WebView
+          useWebKit={false}
+          scrollEnabled={true}
+          scalesPageToFit={true}
+          source={pdfFile} />
         <View style={styles.instructionView}>
           <View style={styles.buttonContainer}>
             <Pressable style={styles.buttonText} onPressIn={back}><Text>Back</Text></Pressable>
             <Pressable style={styles.buttonText} onPressIn={cancel}><Text>Cancel</Text></Pressable>
-            <Pressable style={styles.buttonText} onPressIn={onNext} disabled={nextDisabled}><Text>Next</Text></Pressable>
+            <Pressable style={styles.buttonText} onPressIn={next}><Text>Next</Text></Pressable>
           </View>
         </View>
       </View>
@@ -90,6 +102,10 @@ const styles = StyleSheet.create({
     paddingTop: 45,
     flex: 1,
     backgroundColor: AppBackGroundColor,
+  },
+  pdf: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
   },
   headerView: {
     flex: 0,
@@ -152,4 +168,5 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
 });
-export default memo(Step4);
+
+export default memo(Step6);

@@ -1,12 +1,12 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, ActivityIndicator} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, ActivityIndicator } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import {CardDetail, BackButton} from '../components';
-import {goBack, colors, onScreen} from '../constants';
-import {Container} from '../styles';
+import { CardDetail, BackButton } from '../components';
+import { goBack, colors, onScreen } from '../constants';
+import { Container } from '../styles';
 import firestore from '@react-native-firebase/firestore';
 
-const AdventureDetailScreen = ({navigation, route}) => {
+const AdventureDetailScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [buttonStatus, setButtonStatus] = useState(0);
   const [userTripInfo, setUserTripInfo] = useState(null);
@@ -60,14 +60,20 @@ const AdventureDetailScreen = ({navigation, route}) => {
           .get()
           .then(querySnapshot => {
             const data = querySnapshot.data();
-            if (data.Trips.TripID === tripSelected.key) {
-              setButtonStatus(4);
-              setUserTripInfo(data.Trips);
+            if (data.trips.length > 0) {
+              if (data.Trips[0].tripId === tripSelected.key) {
+                setButtonStatus(4);
+                setUserTripInfo(data.Trips[0]);
+              } else {
+                setButtonStatus(3);
+              }
             } else {
               setButtonStatus(3);
             }
           })
           .catch(e => console.log(e));
+      } else {
+        setButtonStatus(1);
       }
       setLoading(false);
     });
@@ -76,21 +82,21 @@ const AdventureDetailScreen = ({navigation, route}) => {
   return loading ? (
     <ActivityIndicator size="large" />
   ) : (
-    <Container>
-      <BackButton goBack={goBack(navigation)} />
-      <CardDetail
-        item={tripSelected}
-        buttonStyle={[
-          buttonStatus === 2 ? styles.pendingButton : styles.interestedButton,
-          styles.socalButton,
-        ]}
-        buttonText={setButtonText()}
-        onPress={setNavigation()}
-        disabled={buttonStatus === 2 ? true : false}
-        icon={buttonStatus === 2 ? 'lock' : ''}
-      />
-    </Container>
-  );
+      <Container>
+        <BackButton goBack={goBack(navigation)} />
+        <CardDetail
+          item={tripSelected}
+          buttonStyle={[
+            buttonStatus === 2 ? styles.pendingButton : styles.interestedButton,
+            styles.socalButton,
+          ]}
+          buttonText={setButtonText()}
+          onPress={setNavigation()}
+          disabled={buttonStatus === 2 ? true : false}
+          icon={buttonStatus === 2 ? 'lock' : ''}
+        />
+      </Container>
+    );
 };
 
 const styles = StyleSheet.create({

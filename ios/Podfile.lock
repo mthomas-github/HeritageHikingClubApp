@@ -230,20 +230,20 @@ PODS:
     - React-Core (= 0.63.2)
     - React-jsi (= 0.63.2)
     - ReactCommon/turbomodule/core (= 0.63.2)
-  - FBSDKCoreKit (5.8.0):
-    - FBSDKCoreKit/Basics (= 5.8.0)
-    - FBSDKCoreKit/Core (= 5.8.0)
-  - FBSDKCoreKit/Basics (5.8.0)
-  - FBSDKCoreKit/Core (5.8.0):
+  - FBSDKCoreKit (7.1.1):
+    - FBSDKCoreKit/Basics (= 7.1.1)
+    - FBSDKCoreKit/Core (= 7.1.1)
+  - FBSDKCoreKit/Basics (7.1.1)
+  - FBSDKCoreKit/Core (7.1.1):
     - FBSDKCoreKit/Basics
-  - FBSDKLoginKit (5.8.0):
-    - FBSDKLoginKit/Login (= 5.8.0)
-  - FBSDKLoginKit/Login (5.8.0):
-    - FBSDKCoreKit (~> 5.0)
-  - FBSDKShareKit (5.8.0):
-    - FBSDKShareKit/Share (= 5.8.0)
-  - FBSDKShareKit/Share (5.8.0):
-    - FBSDKCoreKit (~> 5.0)
+  - FBSDKLoginKit (7.1.1):
+    - FBSDKLoginKit/Login (= 7.1.1)
+  - FBSDKLoginKit/Login (7.1.1):
+    - FBSDKCoreKit (~> 7.1.1)
+  - FBSDKShareKit (7.1.1):
+    - FBSDKShareKit/Share (= 7.1.1)
+  - FBSDKShareKit/Share (7.1.1):
+    - FBSDKCoreKit (~> 7.1.1)
   - Firebase/Analytics (6.27.1):
     - Firebase/Core
   - Firebase/Auth (6.27.1):
@@ -635,29 +635,29 @@ PODS:
     - React-cxxreact (= 0.63.2)
     - React-jsi (= 0.63.2)
   - React-jsinspector (0.63.2)
-  - react-native-fbsdk (1.1.2):
+  - react-native-fbsdk (2.0.0):
     - React
-    - react-native-fbsdk/Core (= 1.1.2)
-    - react-native-fbsdk/Login (= 1.1.2)
-    - react-native-fbsdk/Share (= 1.1.2)
-  - react-native-fbsdk/Core (1.1.2):
-    - FBSDKCoreKit (= 5.8)
+    - react-native-fbsdk/Core (= 2.0.0)
+    - react-native-fbsdk/Login (= 2.0.0)
+    - react-native-fbsdk/Share (= 2.0.0)
+  - react-native-fbsdk/Core (2.0.0):
+    - FBSDKCoreKit (~> 7.0)
     - React
-  - react-native-fbsdk/Login (1.1.2):
-    - FBSDKLoginKit (= 5.8)
+  - react-native-fbsdk/Login (2.0.0):
+    - FBSDKLoginKit (~> 7.0)
     - React
-  - react-native-fbsdk/Share (1.1.2):
-    - FBSDKShareKit (= 5.8)
+  - react-native-fbsdk/Share (2.0.0):
+    - FBSDKShareKit (~> 7.0)
     - React
   - react-native-image-picker (2.3.3):
-    - React
-  - react-native-pdf (6.2.0):
     - React
   - react-native-safe-area-context (0.7.3):
     - React
   - react-native-simple-toast (1.1.2):
     - React
     - Toast (~> 4.0.0)
+  - react-native-webview (10.3.3):
+    - React
   - React-RCTActionSheet (0.63.2):
     - React-Core/RCTActionSheetHeaders (= 0.63.2)
   - React-RCTAnimation (0.63.2):
@@ -718,8 +718,6 @@ PODS:
     - React-Core (= 0.63.2)
     - React-cxxreact (= 0.63.2)
     - React-jsi (= 0.63.2)
-  - rn-fetch-blob (0.12.0):
-    - React-Core
   - RNCMaskedView (0.1.10):
     - React
   - RNCPicker (1.6.5):
@@ -802,9 +800,9 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-fbsdk (from `../node_modules/react-native-fbsdk`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
-  - react-native-pdf (from `../node_modules/react-native-pdf`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-simple-toast (from `../node_modules/react-native-simple-toast`)
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -815,7 +813,6 @@ DEPENDENCIES:
   - React-RCTText (from `../node_modules/react-native/Libraries/Text`)
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNCPicker (from `../node_modules/@react-native-community/picker`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
@@ -911,12 +908,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fbsdk"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
-  react-native-pdf:
-    :path: "../node_modules/react-native-pdf"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-simple-toast:
     :path: "../node_modules/react-native-simple-toast"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -937,8 +934,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
-  rn-fetch-blob:
-    :path: "../node_modules/rn-fetch-blob"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
   RNCPicker:
@@ -979,9 +974,9 @@ SPEC CHECKSUMS:
   DoubleConversion: cde416483dac037923206447da6e1454df403714
   FBLazyVector: 3ef4a7f62e7db01092f9d517d2ebc0d0677c4a37
   FBReactNativeSpec: dc7fa9088f0f2a998503a352b0554d69a4391c5a
-  FBSDKCoreKit: e7dcac0aabcfb09d0166998edd95fe3b05a0ce5d
-  FBSDKLoginKit: 1b0cf04df0370b37404213157b060d6666ede814
-  FBSDKShareKit: abc29e1bb4f9f59f679adf1ae191006d68455f96
+  FBSDKCoreKit: b46507dc8b8cefed31d644e74d7cc30e2a715ef8
+  FBSDKLoginKit: 1a61d79e2b25e2fc0d03dccab1e34b38bbdf2546
+  FBSDKShareKit: 00a055c1999b099596e00212dd1c0600c6697019
   Firebase: 919186c8e119dd9372a45fd1dd17a8a942bc1892
   FirebaseAnalytics: 5fa308e1b13f838d0f6dc74719ac2a72e8c5afc4
   FirebaseAuth: b85c064e0ac60f82486728d50a4803f235687302
@@ -1025,11 +1020,11 @@ SPEC CHECKSUMS:
   React-jsi: 54245e1d5f4b690dec614a73a3795964eeef13a8
   React-jsiexecutor: 8ca588cc921e70590820ce72b8789b02c67cce38
   React-jsinspector: b14e62ebe7a66e9231e9581279909f2fc3db6606
-  react-native-fbsdk: c35d42169e64aaf66f01713c1e18d0674f7f6519
+  react-native-fbsdk: 00c15d138bba6d4efa628670886fc58cec858c19
   react-native-image-picker: 3d3f85baabca60a00b75fb8facc1376db7bbdafa
-  react-native-pdf: 909cd849e6a806731b2135263189fea39494b55e
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   react-native-simple-toast: 58b71ef003f01d2c0bf5dcd2fdccc75861dabade
+  react-native-webview: 136107c8fc07efc95be59e519710cdc05822ad40
   React-RCTActionSheet: 910163b6b09685a35c4ebbc52b66d1bfbbe39fc5
   React-RCTAnimation: 9a883bbe1e9d2e158d4fb53765ed64c8dc2200c6
   React-RCTBlob: 39cf0ece1927996c4466510e25d2105f67010e13
@@ -1040,7 +1035,6 @@ SPEC CHECKSUMS:
   React-RCTText: 1b6773e776e4b33f90468c20fe3b16ca3e224bb8
   React-RCTVibration: 4d2e726957f4087449739b595f107c0d4b6c2d2d
   ReactCommon: a0a1edbebcac5e91338371b72ffc66aa822792ce
-  rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
   RNCPicker: 55b9b4240d0a9eba8733d02616775d4040de2e7d
   RNDeviceInfo: 5be12a5bfbb8da3528c43ee4373abd9c30d04616
