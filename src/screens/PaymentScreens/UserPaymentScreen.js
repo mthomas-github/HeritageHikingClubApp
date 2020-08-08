@@ -14,7 +14,7 @@ import {
 } from '../../AppSettings';
 import { imagePickerOptionNonSave } from '../../utils';
 import { Button, BackButton, HelpButton } from '../../components';
-import { goBack, randomFixedInteger, getPaymentTypeTextInstuction, getPaymentTypeText } from '../../constants';
+import { goBack, randomFixedInteger, getPaymentTypeTextInstuction, getPaymentTypeText, onScreen } from '../../constants';
 
 const UserPaymentScreen = ({ navigation, route, ...props }) => {
   const [userCode, setUserCode] = useState('');
@@ -40,7 +40,7 @@ const UserPaymentScreen = ({ navigation, route, ...props }) => {
     if (foundPerson && foundAmount && foundCode) {
       return true;
     } else {
-      return true;
+      return false;
     }
   }
 
@@ -126,7 +126,7 @@ const UserPaymentScreen = ({ navigation, route, ...props }) => {
               5. Click on Verify Payment and upload the screen shot you just took
           </Text>
             <Button style={styles.buttonText} onPress={pickTranscationPicture}>Verify Payment</Button>
-            {showManualButton && <Button style={styles.buttonText} onPress={goBack(navigation)}>Manually Verify Payment</Button>}
+            {showManualButton && <Button style={styles.buttonText} onPress={onScreen('Dashboard', navigation)}>Manually Verify Payment</Button>}
           </View>
           <View style={styles.instructionView}>
             <Text style={styles.instructionText}>

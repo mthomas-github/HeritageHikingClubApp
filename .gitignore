@@ -60,3 +60,5 @@ buck-out/
 .npmrc
 src/AppSettings.js
 android/*.hprof
+.firebaserc
+firebase.json

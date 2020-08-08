@@ -45,7 +45,6 @@ const Step4 = ({ ...props }) => {
         name: name,
         email: email,
       };
-      setNextDisabled(false)
       setPartyMemberInfo([...partyMemberInfo, query]);
     }
   };
@@ -77,7 +76,7 @@ const Step4 = ({ ...props }) => {
           <View style={styles.buttonContainer}>
             <Pressable style={styles.buttonText} onPressIn={back}><Text>Back</Text></Pressable>
             <Pressable style={styles.buttonText} onPressIn={cancel}><Text>Cancel</Text></Pressable>
-            <Pressable style={styles.buttonText} onPressIn={onNext} disabled={nextDisabled}><Text>Next</Text></Pressable>
+            <Pressable style={styles.buttonText} onPressIn={onNext}><Text>Next</Text></Pressable>
           </View>
         </View>
       </View>

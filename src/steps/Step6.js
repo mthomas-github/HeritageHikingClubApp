@@ -7,63 +7,38 @@ import {
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
-import { WebView } from 'react-native-webview';
-import storage from '@react-native-firebase/storage';
+import Toast from 'react-native-simple-toast'
+import functions from '@react-native-firebase/functions';
 import {
   AppBackGroundColor,
   AppHeaderTextColor,
   AppTextColor,
-  AppActionButtonColor
+  AppActionButtonColor,
+  AppSettingsContractName,
+  AppSettingsContractEmail,
 } from '../AppSettings';
 import { HelpButton } from '../components';
-import Signature from 'react-native-signature-canvas';
-import moment from 'moment';
 
-const Step6 = ({...props}) => {
-  const[loading, setLoading] = useState(true);
-  const [signature, setSignature] = useState(null);
-  const {next, cancel, back, saveState, getState} = props;
-  const [currentDate, setCurrentDate] = useState(null);
-  const [visible, setModalVisible] = useState(false);
-  const [pdfFile, setPdfFile] = useState({});
+const Step6 = ({ ...props }) => {
+  const [loading, setLoading] = useState(false);
+  const { next, cancel, back, saveState, getState } = props;
 
-  const handleSignature = userSignature => {
-    setSignature(userSignature);
-    const currentDT = moment(new Date()).format('YYYY-MM-DD');
-    setCurrentDate(currentDT);
-  };
-
-  const handleEmpty = () => {
-    console.log('Empty');
-  };
-
-  const style = `
-    .m-signature-pad--footer
-    .button {
-      background-color: red;
-      color: #FFF;
-    }
-  `;
+  if (__DEV__) {
+    functions().useFunctionsEmulator('http://localhost:5001');
+  }
 
   useEffect(() => {
-    let loadingFile = true
-
-    const getPDF = async () => {
-      const url =
-        await storage()
-          .ref('trips/lLA84qhHx6JHZ0fK9Vii/SignturePage.pdf')
-          .getDownloadURL();
-      return url;
-    };
-
-    getPDF().then((data) => {
-      setPdfFile({ uri: data })
-    }).catch(err => console.log(err));
-    setLoading(false);
-
-    return function cleanup() {
-      loadingFile = false
-    }
+    functions()
+      .httpsCallable('sendSignRequest') ({
+        membersEmail: getState().partyInfo[0].email,
+        sendersName: AppSettingsContractName,
+        sendersEmail: AppSettingsContractEmail
+      })
+      .then(response => {
+        console.log(response.message);
+        Toast.showWithGravity(response.data, Toast.LONG, Toast.TOP);
+        setLoading(false);
+      }).catch(() => Toast.showWithGravity('There was a problem', Toast.LONG, Toast.TOP));
   }, [])
 
   return loading ? <ActivityIndicator size='large' /> : (
@@ -78,13 +53,12 @@ const Step6 = ({...props}) => {
             </Text>
         </View>
         <View style={styles.instructionView}>
-          <Text style={styles.instructionText}>Double Tab To Zoom In</Text>
+          <Text style={styles.instructionText}>
+            We are now creating the Cancellation Policy &amp; Liability Release document, once you see successful
+            you should recieve an email, please review it and sign it. if error please click try agian. 
+            You only have 24 hrs to sign document or you will lose your seat.
+          </Text>
         </View>
-        <WebView
-          useWebKit={false}
-          scrollEnabled={true}
-          scalesPageToFit={true}
-          source={pdfFile} />
         <View style={styles.instructionView}>
           <View style={styles.buttonContainer}>
             <Pressable style={styles.buttonText} onPressIn={back}><Text>Back</Text></Pressable>

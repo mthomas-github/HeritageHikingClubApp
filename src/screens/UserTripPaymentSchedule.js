@@ -20,7 +20,7 @@ const headers = [
 const UserTripPaymentSchedule = ({ navigation, route }) => {
   
   const [userTripInfo] = useState(route.params);
-  
+  console.log(route.params);
   const payButton = (data, index) => {
     
     const dataObj = {

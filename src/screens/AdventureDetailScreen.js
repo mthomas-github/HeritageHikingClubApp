@@ -61,9 +61,9 @@ const AdventureDetailScreen = ({ navigation, route }) => {
           .then(querySnapshot => {
             const data = querySnapshot.data();
             if (data.trips.length > 0) {
-              if (data.Trips[0].tripId === tripSelected.key) {
+              if (data.trips[0].tripId === tripSelected.key) {
                 setButtonStatus(4);
-                setUserTripInfo(data.Trips[0]);
+                setUserTripInfo(data.trips[0]);
               } else {
                 setButtonStatus(3);
               }
@@ -77,6 +77,7 @@ const AdventureDetailScreen = ({ navigation, route }) => {
       }
       setLoading(false);
     });
+
   }, [tripSelected.key, tripSelected.members]);
 
   return loading ? (
