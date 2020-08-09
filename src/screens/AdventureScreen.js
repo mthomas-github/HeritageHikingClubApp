@@ -1,12 +1,19 @@
-import React, {memo, useEffect, useState} from 'react';
-import {FlatList, ActivityIndicator, StyleSheet, View} from 'react-native';
+import React, { memo, useEffect, useState } from 'react';
+import { FlatList, ActivityIndicator, StyleSheet, View, Text, TextInput, Pressable } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import {Logo, Paragraph, Card, Button} from '../components';
-import {onScreen} from '../constants';
-import {logoutUser} from '../api/auth-api';
+import { Logo, Card, BackButton, HelpButton } from '../components';
+import { onScreen, goBack } from '../constants';
+import {
+  AppBackGroundColor,
+  AppHeaderTextColor,
+  AppTextColor,
+  AppActionButtonColor,
+  AppOwnerName,
+} from '../AppSettings';
+import { logoutUser } from '../api/auth-api';
 
-const AdventureScreen = ({navigation}) => {
+const AdventureScreen = ({ navigation }) => {
   const userId = auth().currentUser.uid;
   const [inHHC, setHHC] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -53,7 +60,7 @@ const AdventureScreen = ({navigation}) => {
     return () => tripSubscriber();
   }, []);
 
-  const _renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     if (item !== null) {
       return (
         <Card
@@ -64,44 +71,106 @@ const AdventureScreen = ({navigation}) => {
     }
   };
 
-  return loading ? (
-    <ActivityIndicator size="large" />
-  ) : (
-    <View style={styles.container}>
-      {trips === null || trips.length <= 0 || !inHHC ? (
-        <>
-          <Logo />
-          <Paragraph>
-            {inHHC
-              ? 'No Trips Current, Please checkback later'
-              : 'Please goto User Profile, and active account'}
-          </Paragraph>
-        </>
-      ) : (
-        <FlatList
-          scrollEventThrottle={16}
-          data={trips}
-          renderItem={_renderItem}
-          onEndReachedThreshold={0.5}
-          onEndReached={null}
-        />
-      )}
-      <Button onPress={logoutUser} style={styles.button} compact={true}>
-        Log out
-      </Button>
-    </View>
-  );
+  const renderNoTrips = () => (
+      <View style={styles.container}>
+        <View style={styles.headerView}>
+          <HelpButton style={styles.helpButton} />
+        </View>
+        <View style={[styles.elementsContainer]}>
+          <View>
+            <Logo />
+          </View>
+          <View style={styles.buttonContainer}>
+            {inHHC ? '' : (
+              <Pressable style={styles.buttonText}>
+                <Text>Activate Account</Text>
+              </Pressable>
+            )}
+          </View>
+        </View>
+      </View>
+  )
+
+  const renderTrips = () => (
+    <FlatList
+      scrollEventThrottle={16}
+      data={trips}
+      renderItem={renderItem}
+      onEndReachedThreshold={0.5}
+      onEndReached={null}
+    />
+  )
+
+  return loading
+    ? <ActivityIndicator size='large' />
+    : trips === null 
+    || trips.length <= 0 
+    || !inHHC ? renderNoTrips() 
+    : renderTrips()
 };
 
-const styles = new StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
+    paddingTop: 45,
     flex: 1,
-    paddingTop: 85,
-    width: '100%',
-    alignSelf: 'center',
+    backgroundColor: AppBackGroundColor,
+  },
+  headerView: {
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  helpButton: {
+    marginLeft: 'auto',
+    paddingRight: 10,
+  },
+  backButton: {
+    paddingLeft: 10,
+    paddingBottom: 10,
+  },
+  headerStyle: {
+    fontSize: 26,
+    textAlign: 'center',
+    fontWeight: '300',
+    marginBottom: 24,
+    color: AppHeaderTextColor,
+  },
+  elementsContainer: {
+    flex: 1,
+    marginLeft: 24,
+    marginRight: 24,
+    marginBottom: 24,
+  },
+  instructionText: {
+    color: AppTextColor,
+    paddingBottom: 3,
+    textAlign: 'center'
+  },
+  instructionView: {
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#00b2fe',
+    alignContent: 'center',
+    flexWrap: 'nowrap',
+  },
+  payButton: {
+    alignSelf: 'center',
+    backgroundColor: AppActionButtonColor,
+    paddingLeft: 40,
+    paddingRight: 40
+  },
+  iconWrapper: {
+    alignItems: 'center'
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingTop: 10,
+  },
+  buttonText: {
+    backgroundColor: AppActionButtonColor,
+    color: AppTextColor,
+    padding: 15,
+    alignItems: 'center',
+    borderRadius: 25,
   },
 });
 

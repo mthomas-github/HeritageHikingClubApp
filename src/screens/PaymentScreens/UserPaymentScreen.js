@@ -1,6 +1,6 @@
 import React, { memo, useState, useEffect } from 'react';
 import auth from '@react-native-firebase/auth';
-import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
+import { Text, View, StyleSheet, ActivityIndicator, Pressable } from 'react-native';
 import vision from '@react-native-firebase/ml-vision';
 import ImagePicker from 'react-native-image-picker';
 import Toast from 'react-native-simple-toast';
@@ -13,7 +13,7 @@ import {
   AppPaymentOwnerName
 } from '../../AppSettings';
 import { imagePickerOptionNonSave } from '../../utils';
-import { Button, BackButton, HelpButton } from '../../components';
+import { BackButton, HelpButton } from '../../components';
 import { goBack, randomFixedInteger, getPaymentTypeTextInstuction, getPaymentTypeText, onScreen } from '../../constants';
 
 const UserPaymentScreen = ({ navigation, route, ...props }) => {
@@ -22,15 +22,16 @@ const UserPaymentScreen = ({ navigation, route, ...props }) => {
   const [showManualButton, setShowManualButton] = useState(false);
   const [userId] = useState(auth().currentUser.uid);
   const [data] = useState(route.params);
-  console.log(data);
+
   const processDocument = async (localPath) => {
     const processed = await vision().cloudDocumentTextRecognizerProcessImage(localPath);
     let foundPerson = false;
     let foundAmount = false;
     let foundCode = false;
+    let amountDue = data.clickTripIndex === -1 ? data.totalDue : data.userTripData.userPayments[data.clickTripIndex].amount;
     const regExpUserCode = new RegExp(`\\b${userCode}\\b`, 'gi')
     const regExpOwnerName = new RegExp(`\\b${AppPaymentOwnerName}\\b`, 'gi')
-    const regExpAmount = new RegExp(`\\b${data.amount}\\b`, 'gi')
+    const regExpAmount = new RegExp(`\\b${amountDue}\\b`, 'gi')
     processed.blocks.map(block => {
       if (block.text.match(regExpOwnerName) !== null) foundPerson = true;
       if (block.text.match(regExpAmount) !== null) foundAmount = true;
@@ -77,13 +78,25 @@ const UserPaymentScreen = ({ navigation, route, ...props }) => {
       });
   }
 
-  const updatePaymentInDB = () => {
-    const docRef =
+  const updatePaymentInDB = async () => {
+    const userRef =
       firestore()
         .collection('Users')
-        .doc(userId)
+        .doc(userId);
+    try {
+      await firestore().runTransaction(async (t) => {
+        const doc = await t.get(userRef);
 
-    docRef.get().then(doc => console.log(doc.data()['trips'].Payments[1])).catch(err => console.log(err));
+        const updateDocument = doc.data().trips[0];
+        updateDocument.userPayments[0].isVerifying = true;
+        t.update(userRef, { trips: firestore.FieldValue.arrayUnion(updateDocument)})
+        console.log('Transaction success!');
+
+      })
+    } catch (e) {
+      console.log('Transaction failure:', e);
+
+    }
   }
 
   useEffect(() => {
@@ -108,7 +121,7 @@ const UserPaymentScreen = ({ navigation, route, ...props }) => {
           </View>
           <View style={styles.instructionView}>
             <Text style={styles.instructionText}>
-              1. Make payment for ${data.userTripData.userPayments[data.clickTripIndex].amount}.00 with {getPaymentTypeTextInstuction(data.userTripData.PaymentType)}
+              1. Make payment for ${data.clickTripIndex === -1 ? data.totalDue : data.userTripData.userPayments[data.clickTripIndex].amount}.00 with {getPaymentTypeTextInstuction(data.userTripData.PaymentType)}
             </Text>
             <Text style={styles.instructionText}>
               2. In the message please put this code: {userCode},
@@ -119,14 +132,20 @@ const UserPaymentScreen = ({ navigation, route, ...props }) => {
           </Text>
             <Text style={styles.instructionText}>
               4. Your transcation should say the following:
-              "You paid William Furey -${data.userTripData.userPayments[data.clickTripIndex].amount}.00 {userCode}".
+              "You paid William Furey -${data.clickTripIndex === -1 ? data.totalDue : data.userTripData.userPayments[data.clickTripIndex].amount}.00 {userCode}".
               Take a screenshot and save it as an photo.
           </Text>
             <Text style={styles.instructionText}>
               5. Click on Verify Payment and upload the screen shot you just took
           </Text>
-            <Button style={styles.buttonText} onPress={pickTranscationPicture}>Verify Payment</Button>
-            {showManualButton && <Button style={styles.buttonText} onPress={onScreen('Dashboard', navigation)}>Manually Verify Payment</Button>}
+            <View style={styles.instructionView}>
+              <View style={styles.buttonContainer}>
+                <Pressable style={styles.buttonText} onPress={pickTranscationPicture}><Text>Verify Payment</Text></Pressable>
+              </View>
+              <View style={styles.buttonContainer}>
+                {showManualButton && <Pressable style={styles.buttonText} onPress={updatePaymentInDB}><Text>Manually Verify Payment</Text></Pressable>}
+              </View>
+            </View>
           </View>
           <View style={styles.instructionView}>
             <Text style={styles.instructionText}>
@@ -177,6 +196,9 @@ const styles = StyleSheet.create({
   buttonText: {
     backgroundColor: AppActionButtonColor,
     color: AppTextColor,
+    padding: 15,
+    alignItems: 'center',
+    borderRadius: 25,
   },
   instructionText: {
     color: AppTextColor,
@@ -185,6 +207,11 @@ const styles = StyleSheet.create({
   instructionView: {
     flex: 1,
     flexWrap: 'nowrap',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingTop: 10,
   },
 });
 

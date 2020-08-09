@@ -126,7 +126,7 @@ const UserProfileScreen = ({}) => {
       const db = firestore()
         .collection('Users')
         .doc(userId);
-      db.set({FBGroups: result.groups.data, isHHC: inHHC}, {merge: true});
+      db.set({fbGroups: result.groups.data, isHHC: inHHC}, {merge: true});
     }
   };
 

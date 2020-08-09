@@ -1,15 +1,18 @@
 import React, {memo, useState} from 'react';
-import {TouchableOpacity, StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text, View, Pressable, ActivityIndicator} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-simple-toast';
 import {
-  Background,
-  Logo,
-  Header,
-  Button,
   TextInput,
+  HelpButton,
+  Logo,
 } from '../components';
-import {theme} from '../utils/theme';
+import {
+  AppBackGroundColor,
+  AppHeaderTextColor,
+  AppTextColor,
+  AppActionButtonColor,
+} from '../AppSettings';
 import {emailValidator, passwordValidator} from '../utils/validators';
 import {onScreen} from '../constants';
 
@@ -27,6 +30,8 @@ const LoginScreen = ({navigation}) => {
     const passwordError = passwordValidator(password.value);
 
     if (emailError || passwordError) {
+      Toast.showWithGravity(emailError, Toast.TOP, Toast.LONG);
+      Toast.showWithGravity(passwordError, Toast.TOP, Toast.LONG);
       setEmail({...email, error: emailError});
       setPassword({...password, error: passwordError});
       return;
@@ -56,75 +61,122 @@ const LoginScreen = ({navigation}) => {
 
     setLoading(false);
   };
-
-  return (
-    <Background>
-      <Logo />
-
-      <Header>Welcome back.</Header>
-
-      <TextInput
-        label="Email"
-        returnKeyType="next"
-        value={email.value}
-        onChangeText={text => setEmail({value: text, error: ''})}
-        error={!!email.error}
-        errorText={email.error}
-        autoCapitalize="none"
-        autoCompleteType="email"
-        textContentType="emailAddress"
-        keyboardType="email-address"
-      />
-
-      <TextInput
-        label="Password"
-        returnKeyType="done"
-        value={password.value}
-        onChangeText={text => setPassword({value: text, error: ''})}
-        error={!!password.error}
-        errorText={password.error}
-        secureTextEntry
-        autoCapitalize="none"
-      />
-
-      <View style={styles.forgotPassword}>
-        <TouchableOpacity
-          onPress={() => onScreen('ForgotPasswordScreen', navigation)()}>
-          <Text style={styles.label}>Forgot your password?</Text>
-        </TouchableOpacity>
+  return loading ?
+    <ActivityIndicator size='large' />
+    : (
+      <View style={styles.container}>
+        <View style={styles.headerView}>
+          <HelpButton style={styles.helpButton} />
+        </View>
+        <View style={[styles.elementsContainer]}>
+          <View>
+            <Logo />
+            <Text style={styles.headerStyle}>
+              Welcome Back
+          </Text>
+          </View>
+          <View style={styles.inputView}>
+            <TextInput
+              style={styles.inputText}
+              onChangeText={text => setEmail({ value: text, error: '' })}
+              value={email.value}
+              placeholder="Email"
+              keyboardType='email-address'
+              autoCapitalize='none'
+              placeholderTextColor={AppTextColor}
+            />
+          </View>
+          <View style={styles.inputView}>
+            <TextInput
+              style={styles.inputText}
+              onChangeText={text => setPassword({ value: text, error: '' })}
+              value={password.value}
+              placeholder="Password"
+              autoCapitalize='none'
+              placeholderTextColor={AppTextColor}
+              secureTextEntry={true}
+            />
+          </View>
+          <View style={styles.inputView}>
+            <View style={styles.buttonContainer}>
+              <Pressable onPress={() => onScreen('ForgotPasswordScreen', navigation)()}><Text>Forgot your password? Click Here</Text></Pressable>
+            </View>
+          </View>
+          <View style={styles.inputView}>
+            <View style={styles.buttonContainer}>
+              <Pressable style={styles.buttonText} onPress={_onLoginPressed}><Text>Login</Text></Pressable>
+            </View>
+          </View>
+          <View style={styles.inputView}>
+            <View style={styles.buttonContainer}>
+              <Pressable onPress={() => onScreen('RegisterScreen', navigation)()}><Text>Don’t have an account? Sign Up</Text></Pressable>
+            </View>
+          </View>
+        </View>
       </View>
-
-      <Button loading={loading} mode="contained" onPress={_onLoginPressed}>
-        Login
-      </Button>
-
-      <View style={styles.row}>
-        <Text style={styles.label}>Don’t have an account? </Text>
-        <TouchableOpacity
-          onPress={() => onScreen('RegisterScreen', navigation)()}>
-          <Text style={styles.link}>Sign up</Text>
-        </TouchableOpacity>
-      </View>
-    </Background>
-  );
+    );
 };
 
 const styles = StyleSheet.create({
-  forgotPassword: {
-    width: '100%',
-    alignItems: 'flex-end',
+  container: {
+    paddingTop: 45,
+    flex: 1,
+    backgroundColor: AppBackGroundColor,
+  },
+  headerView: {
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  helpButton: {
+    marginLeft: 'auto',
+    paddingRight: 10,
+  },
+  backButton: {
+    paddingLeft: 10,
+    paddingBottom: 10,
+  },
+  headerStyle: {
+    fontSize: 26,
+    textAlign: 'center',
+    fontWeight: '300',
+    marginBottom: 24,
+    color: AppHeaderTextColor,
+  },
+  elementsContainer: {
+    flex: 1,
+    marginLeft: 24,
+    marginRight: 24,
     marginBottom: 24,
   },
-  row: {
+  inputView: {
+    marginBottom: 15,
+    alignContent: 'center'
+  },
+  inputViewImage: {
+    marginBottom: 15,
+    alignItems: 'center'
+  },
+  inputText: {
+    height: 40,
+    borderColor: AppHeaderTextColor,
+    borderWidth: 1,
+  },
+  buttonContainer: {
     flexDirection: 'row',
-    marginTop: 4,
+    justifyContent: 'space-evenly',
   },
-  label: {
-    color: theme.colors.secondary,
+  buttonText: {
+    backgroundColor: AppActionButtonColor,
+    color: AppTextColor,
+    padding: 15,
+    alignItems: 'center',
+    borderRadius: 25,
   },
-  link: {
-    fontWeight: 'bold',
-    color: theme.colors.primary,
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
 });
 

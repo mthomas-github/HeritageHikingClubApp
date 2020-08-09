@@ -1,21 +1,30 @@
-import React, {memo, useState} from 'react';
-import {Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, { memo, useState } from 'react';
+import {
+  Text,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+  View,
+  TextInput
+} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-simple-toast';
 import {
-  Background,
+  HelpButton,
   BackButton,
   Logo,
-  Header,
-  TextInput,
-  Button,
 } from '../components';
-import {theme} from '../utils/theme';
-import {emailValidator} from '../utils/validators';
-import {onScreen} from '../constants';
+import {
+  AppBackGroundColor,
+  AppHeaderTextColor,
+  AppTextColor,
+  AppActionButtonColor,
+} from '../AppSettings';
+import { emailValidator } from '../utils/validators';
+import { onScreen, goBack } from '../constants';
 
-const ForgotPasswordScreen = ({navigation}) => {
-  const [email, setEmail] = useState({value: '', error: ''});
+const ForgotPasswordScreen = ({ navigation }) => {
+  const [email, setEmail] = useState({ value: '', error: '' });
   const [loading, setLoading] = useState(false);
 
   const _onSendPressed = async () => {
@@ -26,7 +35,8 @@ const ForgotPasswordScreen = ({navigation}) => {
     const emailError = emailValidator(email.value);
 
     if (emailError) {
-      setEmail({...email, error: emailError});
+      Toast.showWithGravity(emailError, Toast.TOP, Toast.LONG);
+      setEmail({ ...email, error: emailError });
       return;
     }
 
@@ -56,54 +66,103 @@ const ForgotPasswordScreen = ({navigation}) => {
     setLoading(false);
   };
 
-  return (
-    <Background>
-      <BackButton goBack={() => onScreen('LoginScreen', navigation)()} />
-
-      <Logo />
-
-      <Header>Restore Password</Header>
-
-      <TextInput
-        label="E-mail address"
-        returnKeyType="done"
-        value={email.value}
-        onChangeText={text => setEmail({value: text, error: ''})}
-        error={!!email.error}
-        errorText={email.error}
-        autoCapitalize="none"
-        autoCompleteType="email"
-        textContentType="emailAddress"
-        keyboardType="email-address"
-      />
-
-      <Button
-        loading={loading}
-        mode="contained"
-        onPress={_onSendPressed}
-        style={styles.button}>
-        Send Reset Instructions
-      </Button>
-      <TouchableOpacity
-        style={styles.back}
-        onPress={() => onScreen('LoginScreen', navigation)()}>
-        <Text style={styles.label}>← Back to login</Text>
-      </TouchableOpacity>
-    </Background>
-  );
+  return loading ?
+    <ActivityIndicator size='large' />
+    : (
+      <View style={styles.container}>
+        <View style={styles.headerView}>
+          <BackButton style={styles.backButton} goBack={goBack(navigation)} />
+          <HelpButton style={styles.helpButton} />
+        </View>
+        <View style={[styles.elementsContainer]}>
+          <View>
+            <Logo />
+            <Text style={styles.headerStyle}>
+              Forgot Password
+          </Text>
+          </View>
+          <View style={styles.inputView}>
+            <TextInput
+              style={styles.inputText}
+              onChangeText={text => setEmail({ value: text, error: '' })}
+              value={email.value}
+              placeholder="Email"
+              keyboardType='email-address'
+              autoCapitalize='none'
+              placeholderTextColor={AppTextColor}
+            />
+          </View>
+          <View style={styles.inputView}>
+            <View style={styles.buttonContainer}>
+              <Pressable style={styles.buttonText} onPress={_onSendPressed}><Text>Send Reset Instructions</Text></Pressable>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
 };
 
 const styles = StyleSheet.create({
-  back: {
-    width: '100%',
-    marginTop: 12,
+  container: {
+    paddingTop: 45,
+    flex: 1,
+    backgroundColor: AppBackGroundColor,
   },
-  button: {
-    marginTop: 12,
+  headerView: {
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
   },
-  label: {
-    color: theme.colors.secondary,
-    width: '100%',
+  helpButton: {
+    marginLeft: 'auto',
+    paddingRight: 10,
+  },
+  backButton: {
+    paddingLeft: 10,
+    paddingBottom: 10,
+  },
+  headerStyle: {
+    fontSize: 26,
+    textAlign: 'center',
+    fontWeight: '300',
+    marginBottom: 24,
+    color: AppHeaderTextColor,
+  },
+  elementsContainer: {
+    flex: 1,
+    marginLeft: 24,
+    marginRight: 24,
+    marginBottom: 24,
+  },
+  inputView: {
+    marginBottom: 15,
+    alignContent: 'center'
+  },
+  inputViewImage: {
+    marginBottom: 15,
+    alignItems: 'center'
+  },
+  inputText: {
+    height: 40,
+    borderColor: AppHeaderTextColor,
+    borderWidth: 1,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingTop: 10,
+  },
+  buttonText: {
+    backgroundColor: AppActionButtonColor,
+    color: AppTextColor,
+    padding: 15,
+    alignItems: 'center',
+    borderRadius: 25,
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
 });
 

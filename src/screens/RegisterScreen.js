@@ -1,61 +1,38 @@
-import React, {memo, useState} from 'react';
+import React, { memo, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
-  Image,
   ActivityIndicator,
-} from 'react-native';
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
-import ImagePicker from 'react-native-image-picker';
-import Toast from 'react-native-simple-toast';
-import {
-  Background,
-  Header,
-  Button,
   TextInput,
+  Pressable,
+} from 'react-native';
+import Toast from 'react-native-simple-toast';
+import firestore from '@react-native-firebase/firestore'
+import {
+  HelpButton,
   BackButton,
+  Logo,
 } from '../components';
+import {
+  AppBackGroundColor,
+  AppHeaderTextColor,
+  AppTextColor,
+  AppActionButtonColor,
+} from '../AppSettings';
 import {
   emailValidator,
   passwordValidator,
   nameValidator,
 } from '../utils/validators';
-import {goBack} from '../constants';
-import {theme} from '../utils';
-import {registerEmailAndPassword} from '../api/auth-api';
-import {useUpload} from '../hooks';
-import {imagePickerOptions} from '../utils';
+import { goBack } from '../constants';
+import { registerEmailAndPassword } from '../api/auth-api';
 
-const RegisterScreen = ({navigation}) => {
-  const [name, setName] = useState({value: '', error: ''});
-  const [email, setEmail] = useState({value: '', error: ''});
-  const [password, setPassword] = useState({value: '', error: ''});
+const RegisterScreen = ({ navigation }) => {
+  const [name, setName] = useState({ value: '', error: '' });
+  const [email, setEmail] = useState({ value: '', error: '' });
+  const [password, setPassword] = useState({ value: '', error: '' });
   const [loading, setLoading] = useState(false);
-  const [{downloadURL, uploading, fileName}, monitorUpload] = useUpload();
-
-  const uploadFile = () => {
-    ImagePicker.launchImageLibrary(imagePickerOptions, imagePickerResponse => {
-      const {didCancel, error} = imagePickerResponse;
-      if (didCancel) {
-        console.log('Canceled');
-      } else if (error) {
-        console.log('An error occurred: ', error);
-      } else if (fileName) {
-        storage()
-          .ref('avatars/' + fileName)
-          .delete()
-          .catch(err => console.log(err))
-          .done(() => {
-            monitorUpload(imagePickerResponse);
-          });
-      } else {
-        monitorUpload(imagePickerResponse);
-      }
-    });
-  };
 
   const _onSignUpPressed = async () => {
     if (loading) {
@@ -66,9 +43,12 @@ const RegisterScreen = ({navigation}) => {
     const passwordError = passwordValidator(password.value);
 
     if (emailError || passwordError || nameError) {
-      setName({...name, error: nameError});
-      setEmail({...email, error: emailError});
-      setPassword({...password, error: passwordError});
+      Toast.showWithGravity(nameError, Toast.TOP, Toast.LONG)
+      Toast.showWithGravity(emailError, Toast.TOP, Toast.LONG)
+      Toast.showWithGravity(passwordError, Toast.TOP, Toast.LONG)
+      setName({ ...name, error: nameError });
+      setEmail({ ...email, error: emailError });
+      setPassword({ ...password, error: passwordError });
       return;
     }
 
@@ -82,8 +62,8 @@ const RegisterScreen = ({navigation}) => {
           {
             name: name.value,
             email: email.value,
-            avatarURL: downloadURL,
-            avatarFileName: fileName,
+            avatarURL: null,
+            avatarFileName: null,
             userLocation: null,
             isHHC: false,
             isMod: false,
@@ -94,106 +74,132 @@ const RegisterScreen = ({navigation}) => {
             fbGroups: [],
             trips: [],
           },
-          {merge: true},
+          { merge: true },
         )
           .catch(err => console.log(err))
           .done();
       })
-      .catch(err => Toast.showWithGravity(err, Toast.SHORT, Toast.TOP))
+      .catch(err => console.log(err))
       .done();
 
     setLoading(false);
   };
 
-  return (
-    <Background>
-      <BackButton goBack={goBack(navigation)} />
-      <Header>Create Account</Header>
-      <TouchableOpacity style={styles.avatarPlaceholder} onPress={uploadFile}>
-        {downloadURL ? (
-          <Image source={{uri: downloadURL}} style={styles.avatar} />
-        ) : (
-          <Image
-            source={require('../assets/tempAvatar.jpg')}
-            style={styles.avatar}
-          />
-        )}
-        {uploading && <ActivityIndicator size="large" />}
-      </TouchableOpacity>
-      <TextInput
-        label="Full Name"
-        returnKeyType="next"
-        value={name.value}
-        onChangeText={text => setName({value: text, error: ''})}
-        error={!!name.error}
-        errorText={name.error}
-      />
-      <TextInput
-        label="Email"
-        returnKeyType="next"
-        value={email.value}
-        onChangeText={text => setEmail({value: text, error: ''})}
-        error={!!email.error}
-        errorText={email.error}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
-
-      <TextInput
-        label="Password"
-        returnKeyType="done"
-        value={password.value}
-        onChangeText={text => setPassword({value: text, error: ''})}
-        error={!!password.error}
-        errorText={password.error}
-        secureTextEntry
-        autoCapitalize="none"
-      />
-
-      <Button
-        loading={loading}
-        mode="contained"
-        onPress={_onSignUpPressed}
-        style={styles.button}>
-        Sign Up
-      </Button>
-
-      <View style={styles.row}>
-        <Text style={styles.label}>Already have an account? </Text>
-        <TouchableOpacity onPress={goBack(navigation)}>
-          <Text style={styles.link}>Login</Text>
-        </TouchableOpacity>
+  return loading ?
+    <ActivityIndicator size='large' />
+    : (
+      <View style={styles.container}>
+        <View style={styles.headerView}>
+          <BackButton style={styles.backButton} goBack={goBack(navigation)} />
+          <HelpButton style={styles.helpButton} />
+        </View>
+        <View style={[styles.elementsContainer]}>
+          <View>
+            <Logo />
+            <Text style={styles.headerStyle}>
+              Create User
+          </Text>
+          </View>
+          <View style={styles.inputView}>
+            <TextInput
+              style={styles.inputText}
+              onChangeText={text => setName({ value: text, error: '' })}
+              value={name.value}
+              placeholder="Full Name"
+              autoCapitalize='none'
+              placeholderTextColor={AppTextColor}
+            />
+          </View>
+          <View style={styles.inputView}>
+            <TextInput
+              style={styles.inputText}
+              onChangeText={text => setEmail({ value: text, error: '' })}
+              value={email.value}
+              placeholder="Email"
+              keyboardType='email-address'
+              autoCapitalize='none'
+              placeholderTextColor={AppTextColor}
+            />
+          </View>
+          <View style={styles.inputView}>
+            <TextInput
+              style={styles.inputText}
+              onChangeText={text => setPassword({ value: text, error: '' })}
+              value={password.value}
+              placeholder="Password"
+              autoCapitalize='none'
+              placeholderTextColor={AppTextColor}
+              secureTextEntry={true}
+            />
+          </View>
+          <View style={styles.inputView}>
+            <View style={styles.buttonContainer}>
+              <Pressable style={styles.buttonText} onPress={_onSignUpPressed}><Text>Create Account</Text></Pressable>
+            </View>
+          </View>
+        </View>
       </View>
-    </Background>
-  );
+    );
 };
 
 const styles = StyleSheet.create({
-  label: {
-    color: theme.colors.secondary,
+  container: {
+    paddingTop: 45,
+    flex: 1,
+    backgroundColor: AppBackGroundColor,
   },
-  button: {
-    marginTop: 10,
-  },
-  row: {
+  headerView: {
+    flex: 0,
     flexDirection: 'row',
-    marginTop: 4,
+    justifyContent: 'flex-start',
   },
-  link: {
-    fontWeight: 'bold',
-    color: theme.colors.primary,
+  helpButton: {
+    marginLeft: 'auto',
+    paddingRight: 10,
   },
-  avatarPlaceholder: {
-    width: 100,
-    height: 100,
-    backgroundColor: '#E1E2E6',
-    borderRadius: 50,
-    marginTop: 48,
-    justifyContent: 'center',
+  backButton: {
+    paddingLeft: 10,
+    paddingBottom: 10,
+  },
+  headerStyle: {
+    fontSize: 26,
+    textAlign: 'center',
+    fontWeight: '300',
+    marginBottom: 24,
+    color: AppHeaderTextColor,
+  },
+  elementsContainer: {
+    flex: 1,
+    marginLeft: 24,
+    marginRight: 24,
+    marginBottom: 24,
+  },
+  inputView: {
+    marginBottom: 15,
+    alignContent: 'center'
+  },
+  inputViewImage: {
+    marginBottom: 15,
+    alignItems: 'center'
+  },
+  inputText: {
+    height: 40,
+    borderColor: AppHeaderTextColor,
+    borderWidth: 1,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingTop: 10,
+  },
+  buttonText: {
+    backgroundColor: AppActionButtonColor,
+    color: AppTextColor,
+    padding: 15,
     alignItems: 'center',
+    borderRadius: 25,
   },
   avatar: {
-    position: 'absolute',
     width: 100,
     height: 100,
     borderRadius: 50,

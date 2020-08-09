@@ -63,7 +63,8 @@ const Step3 = ({ ...props }) => {
         isFinalPayment: records.isFinalPayment,
         isOther: records.isOther,
         isTip: records.isTip,
-        paid: false,
+        isPaid: false,
+        isVerifying: false,
       };
       setUserPaymentSchedule(p => [...p, query]);
     });

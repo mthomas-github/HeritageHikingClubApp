@@ -1,5 +1,5 @@
-import React, { memo, useState } from 'react';
-import { Text, View, StyleSheet, ActivityIndicator, Pressable } from 'react-native';
+import React, { memo, useState, useEffect } from 'react';
+import { Text, View, StyleSheet, Pressable } from 'react-native';
 import Icon from 'react-native-fontawesome-pro';
 import { BackButton, HelpButton, PaymentTableResponsive } from '../components';
 import { goBack, onScreen } from '../constants';
@@ -18,25 +18,34 @@ const headers = [
 ]
 
 const UserTripPaymentSchedule = ({ navigation, route }) => {
-  
+
   const [userTripInfo] = useState(route.params);
-  console.log(route.params);
-  const payButton = (data, index) => {
-    
+  const [balance, setBalace] = useState();
+  const dataFullAmountObj = {
+    userTripData: userTripInfo,
+    clickTripIndex: -1,
+    totalDue: balance
+  }
+  const payButton = (index) => {
+
     const dataObj = {
-      userTripData: data,
+      userTripData: userTripInfo,
       clickTripIndex: index
     }
-    
+
     return (
       <Pressable style={styles.payButton} onPressIn={onScreen('UserPaymentScreen', navigation, dataObj)}>
-      <Text>Pay</Text>
-    </Pressable>
+        <Text>Pay</Text>
+      </Pressable>
     )
   };
 
   const paidIcon = () => (
     <Icon size={25} name="check" color={AppHeaderTextColor} containerStyle={{ alignItems: 'center' }} />
+  )
+
+  const waitVerifyIcon = () => (
+    <Icon size={25} name="clock" color={AppHeaderTextColor} containerStyle={{ alignItems: 'center' }} />
   )
 
   const cashOnlyIcon = () => (
@@ -48,36 +57,58 @@ const UserTripPaymentSchedule = ({ navigation, route }) => {
       [
         records.isDeposit ? 'Now' : records.date,
         `$${records.amount}.00`,
-        records.paid
+        records.isPaid
           ? paidIcon()
           : records.isTip || records.isOther || userTripInfo.paymentType === 4
             ? cashOnlyIcon()
-            : payButton(userTripInfo, index)]
+            : records.isVerifying ? waitVerifyIcon() : payButton(index)]
     ));
 
+useEffect(() => {
+  const getTotalAmountDue = () => {
+    let totalAmountDue = userTripInfo.tripCost;
+    userTripInfo.userPayments.map((records) => {
+      records.isPaid &&
+        (!records.isTip || !records.isOther)
+        ? totalAmountDue -= records.amount
+        : totalAmountDue
+    });
+    setBalace(totalAmountDue);
+  }
+  getTotalAmountDue();
+  return () => {
+    setBalace(0);
+  }
+}, [])
+
   return (
-      <View style={styles.container}>
-        <View style={styles.headerView}>
-          <BackButton style={styles.backButton} goBack={goBack(navigation)} />
-          <HelpButton style={styles.helpButton} />
-        </View>
-        <View style={[styles.elementsContainer]}>
-          <View>
-            <Text style={styles.headerStyle}>
-              Payment Dates
+    <View style={styles.container}>
+      <View style={styles.headerView}>
+        <BackButton style={styles.backButton} goBack={goBack(navigation)} />
+        <HelpButton style={styles.helpButton} />
+      </View>
+      <View style={[styles.elementsContainer]}>
+        <View>
+          <Text style={styles.headerStyle}>
+            Payment Dates
             </Text>
-            <View style={styles.instructionView}>
-              <Text style={styles.instructionText}>Total Price For Your Trip: ${userTripInfo.tripCost}.00</Text>
-            </View>
-            <PaymentTableResponsive rowData={tableData} headers={headers} />
-            <View style={styles.instructionView}>
-              <Text style={styles.instructionText}>Cash Only Payments? Look For $ Icon.
+          <View style={styles.instructionView}>
+            <Text style={styles.instructionText}>Total Price For Your Trip: ${userTripInfo.tripCost}.00</Text>
+          </View>
+          <PaymentTableResponsive rowData={tableData} headers={headers} />
+          <View style={styles.instructionView}>
+            <Text style={styles.instructionText}>Cash Only Payments? Look For $ Icon.
               Give to {AppOwnerName} in envelope with your name on it</Text>
-            </View>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Pressable style={styles.buttonText} onPressIn={onScreen('UserPaymentScreen', navigation, dataFullAmountObj)}>
+              <Text>Pay Entire Balance ${balance}.00</Text>
+            </Pressable>
           </View>
         </View>
       </View>
-    );
+    </View>
+  );
 };
 
 
@@ -131,6 +162,18 @@ const styles = StyleSheet.create({
   },
   iconWrapper: {
     alignItems: 'center'
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingTop: 10,
+  },
+  buttonText: {
+    backgroundColor: AppActionButtonColor,
+    color: AppTextColor,
+    padding: 15,
+    alignItems: 'center',
+    borderRadius: 25,
   },
 });
 
