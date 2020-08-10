@@ -1,0 +1,10 @@
+{
+    "title": null,
+    "description": null,
+    "tripPrice": null,
+    "tripImageURL": null,
+    "signupPhase": 0,
+    "tripDates": [{"startDate": null, "endDate": null, "isTenative": false}],
+    "tripPaymentSchdule": [{"paymentDate": null, "paymentAmount": null, "isCashOnly": false, "isDeposit": false, "extraCost": [{"dueDate": null, "amount": null, "paymentDescription": null}]}],
+    "membersList": [{"userId": null, "partySize": null, "hikingLevel": null}]
+}

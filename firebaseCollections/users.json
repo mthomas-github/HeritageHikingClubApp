@@ -1,0 +1,27 @@
+{
+    "avatarFileName": null,
+    "avatarURL": null,
+    "email": null,
+    "fbGroups": [],
+    "isAdmin": false,
+    "isHHC": false,
+    "isMod": false,
+    "isSuper": false,
+    "memberStats": [
+        {
+            "totalHikes": 0,
+            "totalMilesInYear": 0,
+            "TotalMilesEntireTime": 0
+        }
+    ],
+    "memberStatsHHC": [
+        {
+            "totalHikes": 0,
+            "totalMilesInYear": 0,
+            "TotalMilesEntireTime": 0
+        }
+    ],
+    "name": null,
+    "trips": [],
+    "userLocation": null
+}
