@@ -62,3 +62,6 @@ src/AppSettings.js
 android/*.hprof
 .firebaserc
 firebase.json
+database-debug.log
+firestore-debug.log
+ui-debug.log

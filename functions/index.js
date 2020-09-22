@@ -1,22 +1,7 @@
-'use strict';
-
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const signRequestClient = require('signrequest-client');
-const OAuth2 = require('oauth').OAuth2;
-const https = require('https');
 admin.initializeApp();
-
-const oauth2 = new OAuth2(
-    functions.config().fb.appKey,
-    functions.config().fb.appSecret,
-    "https://graph.facebook.com/",
-    null,
-    "v2.8/oauth/access_token");
-
-const options = {
-    "redirect_url": functions.config().fb.redirectUrl
-};
 
 exports.sendSignRequest = functions.https.onRequest(async (req, res) => {
     console.log('Check if request is authorized with Firebase ID token');
@@ -95,7 +80,7 @@ exports.sendSignRequest = functions.https.onRequest(async (req, res) => {
         const response = function (error, data, response) {
             if (error) {
                 functions.logger.error('SignRequestClient', error);
-                res.status(500).json({ result: 'There was a problem.'  });
+                res.status(500).json({ result: 'There was a problem.' });
             } else {
                 functions.logger.info('Send SuccessFully');
                 res.status(200).json({ result: 'Email Successfuly Sent! Check Your Email' });
@@ -109,90 +94,3 @@ exports.sendSignRequest = functions.https.onRequest(async (req, res) => {
     }
 
 });
-
-exports.fbAuth = functions.https.onCall((data, context, callback) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'Endpoint requires authentication!');
-    }
-
-    if (data.queryStringParameters && data.queryStringParameters.error) {
-        console.log(data.queryStringParameters);
-        callback(null, getFailureResponse(data.queryStringParameters));
-    }
-    // redirect to facebook if "code" is not provided in the query string
-    else if (!event.queryStringParameters || !event.queryStringParameters.code) {
-        callback(null, {
-            statusCode: 302,
-            headers: {
-                'Location': 'https://www.facebook.com/v2.5/dialog/oauth' +
-                    '?client_id=' + process.env.appKey +
-                    '&redirect_uri=' + process.env.redirectUrl +
-                    '&scope=email'
-            }
-        });
-    }
-    else {
-        oauth2.getOAuthAccessToken(
-            event.queryStringParameters.code,
-            options,
-            function (error, access_token, refresh_token, results) {
-
-                if (error) {
-                    console.log(error);
-                    callback(null, getFailureResponse(error));
-                }
-
-                var url = "https://graph.facebook.com/me?fields=id,name,email,picture&access_token=" + access_token;
-
-                https.get(url, function (res) {
-                    console.log("got response: " + res.statusCode);
-
-                    var body = '';
-
-                    res.on('data', function (chunk) {
-                        body += chunk;
-                    });
-
-                    res.on('end', function () {
-                        var json = JSON.parse(body);
-                        console.log('id', json.id);
-                        console.log('name', json.name);
-                        console.log('email', json.email);
-                        console.log('url', json.picture.data.url);
-
-                        // you could save/update user details in a DB here...
-
-                        console.log('success', data);
-                        callback(null, getSuccessResponse(data, process.env.appUrl));
-                    });
-                }).on('error', function (error) {
-                    console.log(error);
-                    callback(null, getFailureResponse(error));
-                });
-            }
-        );
-    }
-
-});
-
-function getSuccessResponse(userId, url) {
-    // you could set a session cookie here (e.g. JWT token) and return it to the
-    // users browser...
-    var response = {
-        statusCode: 302,
-        headers: {
-            'Location': url,
-        }
-    };
-    return response;
-}
-
-function getFailureResponse(error) {
-    // this pretty raw... were just going to return a crude error... you could
-    // do something pretty here
-    var response = {
-        statusCode: 400,
-        body: JSON.stringify(error),
-    };
-    return response;
-}
